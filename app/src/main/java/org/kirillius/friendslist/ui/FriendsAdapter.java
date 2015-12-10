@@ -53,10 +53,11 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
 
         VKApiUserFull friend = mItems.get(position);
 
+        // fixme: choose appropriate image size
         Picasso.with(mContext).load(friend.photo_100).into(holder.photoView);
 
         holder.nameView.setText(friend.toString());
-        holder.onlineView.setText(friend.online ? "Online" : "Offline");
+        holder.onlineView.setText(friend.online ? mContext.getString(R.string.online) : mContext.getString(R.string.offline));
     }
 
     @Override
