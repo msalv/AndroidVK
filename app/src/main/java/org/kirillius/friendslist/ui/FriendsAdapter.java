@@ -11,6 +11,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.vk.sdk.api.model.VKApiUserFull;
+import com.vk.sdk.api.model.VKList;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,14 +26,15 @@ import java.io.InputStream;
  */
 public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHolder> {
 
-    private JSONArray mItems;
+    private VKList<VKApiUserFull> mItems;
 
     public FriendsAdapter() {
 
     }
 
-    public void setItems(JSONArray items) {
+    public void setItems(VKList<VKApiUserFull> items) {
         mItems = items;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -43,23 +47,19 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        try {
-            JSONObject friend = mItems.getJSONObject(position);
 
-            // todo: cache images
-            new DownloadImageTask(holder.photoView).execute(friend.getString("photo_100"));
+        VKApiUserFull friend = mItems.get(position);
 
-            holder.nameView.setText(friend.getString("first_name") + " " + friend.getString("last_name") );
-            holder.onlineView.setText(friend.getInt("online") != 0 ? "Online" : "Offline");
+        // todo: cache images
+        new DownloadImageTask(holder.photoView).execute(friend.photo_100);
 
-        } catch (JSONException e) {
-            Log.e("friends", e.getMessage());
-        }
+        holder.nameView.setText(friend.toString());
+        holder.onlineView.setText(friend.online ? "Online" : "Offline");
     }
 
     @Override
     public int getItemCount() {
-        return mItems != null ? mItems.length() : 0;
+        return mItems != null ? mItems.size() : 0;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

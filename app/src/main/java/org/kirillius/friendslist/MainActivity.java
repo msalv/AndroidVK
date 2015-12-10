@@ -18,6 +18,8 @@ import com.vk.sdk.api.VKError;
 import com.vk.sdk.api.VKParameters;
 import com.vk.sdk.api.VKRequest;
 import com.vk.sdk.api.VKResponse;
+import com.vk.sdk.api.model.VKApiUserFull;
+import com.vk.sdk.api.model.VKList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -84,16 +86,9 @@ public class MainActivity extends AppCompatActivity {
         request.executeWithListener(new VKRequest.VKRequestListener() {
             @Override
             public void onComplete(VKResponse response) {
-                JSONArray items = null;
-
-                try {
-                    items = response.json.getJSONObject("response").getJSONArray("items");
-                } catch (JSONException e) {
-                    Log.e("friends", e.getMessage());
+                if (response.parsedModel instanceof VKList) {
+                    mAdapter.setItems((VKList<VKApiUserFull>)response.parsedModel);
                 }
-
-                mAdapter.setItems(items);
-                mAdapter.notifyDataSetChanged();
             }
             @Override
             public void onError(VKError error) {
