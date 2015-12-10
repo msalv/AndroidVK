@@ -92,6 +92,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
             try {
                 InputStream in = new java.net.URL(urldisplay).openStream();
                 mIcon11 = BitmapFactory.decodeStream(in);
+                in.close();
             } catch (Exception e) {
                 Log.e("Error", e.getMessage());
                 e.printStackTrace();
