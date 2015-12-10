@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
     private void fetchFriends() {
         VKRequest request = VKApi.friends().get(VKParameters.from(
             "order", "hints",
-            VKApiConst.FIELDS, "online,photo_50,photo_100,photo_200_orig"
+            "fields", "online,photo_50,photo_100,photo_200,photo_400"
         ));
 
         request.executeWithListener(new VKRequest.VKRequestListener() {
