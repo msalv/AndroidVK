@@ -12,6 +12,7 @@
         android:layout_width="48dip"
         android:layout_height="48dip"
         android:layout_marginRight="12dip"
+        android:background="@drawable/camera"
         android:layout_gravity="center_vertical" />
 
     <LinearLayout
