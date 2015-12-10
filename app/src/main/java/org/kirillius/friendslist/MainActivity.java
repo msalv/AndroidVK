@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         mFriendsList = (RecyclerView) findViewById(R.id.friends_list);
         mFriendsList.setHasFixedSize(true);
 
-        mAdapter = new FriendsAdapter();
+        mAdapter = new FriendsAdapter(this);
 
         mFriendsList.setLayoutManager(new LinearLayoutManager(this));
         mFriendsList.setAdapter(mAdapter);

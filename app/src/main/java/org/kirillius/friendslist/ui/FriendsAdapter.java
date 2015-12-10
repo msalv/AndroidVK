@@ -1,5 +1,6 @@
 package org.kirillius.friendslist.ui;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.vk.sdk.api.model.VKApiUserFull;
 import com.vk.sdk.api.model.VKList;
 
@@ -26,10 +28,11 @@ import java.io.InputStream;
  */
 public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHolder> {
 
+    private Context mContext;
     private VKList<VKApiUserFull> mItems;
 
-    public FriendsAdapter() {
-
+    public FriendsAdapter(Context context) {
+        mContext = context;
     }
 
     public void setItems(VKList<VKApiUserFull> items) {
@@ -50,8 +53,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
 
         VKApiUserFull friend = mItems.get(position);
 
-        // todo: cache images
-        new DownloadImageTask(holder.photoView).execute(friend.photo_100);
+        Picasso.with(mContext).load(friend.photo_100).into(holder.photoView);
 
         holder.nameView.setText(friend.toString());
         holder.onlineView.setText(friend.online ? "Online" : "Offline");
@@ -73,35 +75,6 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
             photoView = (ImageView) itemView.findViewById(R.id.photo);
             nameView = (TextView) itemView.findViewById(R.id.name);
             onlineView = (TextView) itemView.findViewById(R.id.online);
-        }
-    }
-
-    /**
-     * http://stackoverflow.com/a/9288544
-     */
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
-
-        public DownloadImageTask(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-                in.close();
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
         }
     }
 }
