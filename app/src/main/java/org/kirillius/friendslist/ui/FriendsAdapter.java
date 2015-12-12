@@ -13,6 +13,7 @@ import com.vk.sdk.api.model.VKApiUserFull;
 import com.vk.sdk.api.model.VKList;
 
 import org.kirillius.friendslist.R;
+import org.kirillius.friendslist.core.AndroidUtilities;
 import org.kirillius.friendslist.core.AppLoader;
 
 /**
@@ -44,8 +45,9 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
 
         VKApiUserFull friend = mItems.get(position);
 
-        // fixme: choose appropriate image size
-        this.mImageLoader.load(friend.photo_100).into(holder.photoView);
+        int size = AndroidUtilities.dp(48);
+        String photo = friend.photo.getImageForDimension(size, size);
+        this.mImageLoader.load(photo).into(holder.photoView);
 
         holder.nameView.setText(friend.toString());
 
