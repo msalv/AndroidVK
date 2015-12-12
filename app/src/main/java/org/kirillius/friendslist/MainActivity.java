@@ -24,8 +24,6 @@ import org.kirillius.friendslist.ui.FriendsAdapter;
 public class MainActivity extends AppCompatActivity {
 
     private Toolbar mToolbar;
-    private RecyclerView mFriendsList;
-    private FriendsAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,14 +32,6 @@ public class MainActivity extends AppCompatActivity {
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setTitle(R.string.app_name);
-
-        mFriendsList = (RecyclerView) findViewById(R.id.friends_list);
-        mFriendsList.setHasFixedSize(true);
-
-        mAdapter = new FriendsAdapter(this);
-
-        mFriendsList.setLayoutManager(new LinearLayoutManager(this));
-        mFriendsList.setAdapter(mAdapter);
 
         if (!VKSdk.isLoggedIn()) {
             VKSdk.login(this, "friends,offline");
@@ -70,31 +60,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Fetches friends list of the current user
-     */
-    private void fetchFriends() {
-        VKRequest request = VKApi.friends().get(VKParameters.from(
-            "order", "hints",
-            "fields", "online,photo_50,photo_100,photo_200,photo_400"
-        ));
-
-        request.executeWithListener(new VKRequest.VKRequestListener() {
-            @Override
-            public void onComplete(VKResponse response) {
-                if (response.parsedModel instanceof VKList) {
-                    mAdapter.setItems((VKList<VKApiUserFull>)response.parsedModel);
-                }
-            }
-            @Override
-            public void onError(VKError error) {
-                Toast.makeText(getApplicationContext(), "API error", Toast.LENGTH_SHORT).show();
-            }
-            @Override
-            public void attemptFailed(VKRequest request, int attemptNumber, int totalAttempts) {
-                Toast.makeText(getApplicationContext(), "Connection error", Toast.LENGTH_SHORT).show();
-            }
-        });
 
     }
 }
