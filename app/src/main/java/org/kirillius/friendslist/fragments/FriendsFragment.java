@@ -28,6 +28,8 @@ public class FriendsFragment extends Fragment {
     private RecyclerView mFriendsList;
     private FriendsAdapter mAdapter;
 
+    private VKRequest mCurrentRequest;
+
     public FriendsFragment() {
         // Required empty public constructor
     }
@@ -73,25 +75,47 @@ public class FriendsFragment extends Fragment {
      * Fetches friends list of the current user
      */
     private void fetchFriends() {
-        VKRequest request = VKApi.friends().get(VKParameters.from(
+        mCurrentRequest = VKApi.friends().get(VKParameters.from(
                 "order", "hints",
                 "fields", "online,photo_50,photo_100,photo_200,photo_400"
         ));
 
-        request.executeWithListener(new VKRequest.VKRequestListener() {
+        mCurrentRequest.executeWithListener(new VKRequest.VKRequestListener() {
             @Override
             public void onComplete(VKResponse response) {
                 if (response.parsedModel instanceof VKList) {
-                    mAdapter.setItems((VKList<VKApiUserFull>) response.parsedModel);
+                    updateFriendsList((VKList<VKApiUserFull>) response.parsedModel);
+                }
+                else {
+                    showError(null);
                 }
             }
 
             @Override
             public void onError(VKError error) {
-                Toast.makeText(getActivity(), "API error", Toast.LENGTH_SHORT).show();
-                Log.e(TAG, error.toString());
+                showError(error);
             }
         });
+    }
 
+    /**
+     * Updates friends list with new data
+     * @param items List of friends
+     */
+    private void updateFriendsList(VKList<VKApiUserFull> items) {
+        mAdapter.setItems(items);
+    }
+
+    /**
+     * Shows error if something went wrong during API request
+     * @param error VKError
+     */
+    private void showError(VKError error) {
+        // todo: show more detailed info in a convenient way
+        Toast.makeText(getActivity(), "Error during request", Toast.LENGTH_SHORT).show();
+
+        if (error != null) {
+            Log.e(TAG, error.toString());
+        }
     }
 }
