@@ -18,11 +18,4 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/friends_list"
-        android:scrollbars="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingTop="8dp"
-        android:clipToPadding="false"
-        android:scrollbarStyle="outsideOverlay" /></FrameLayout>
+</FrameLayout>
