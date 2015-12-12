@@ -65,8 +65,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Shows friends list
+     */
     private void showFriends() {
-        FriendsFragment fragment = FriendsFragment.newInstance(null);
+        FriendsFragment fragment = new FriendsFragment();
 
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
