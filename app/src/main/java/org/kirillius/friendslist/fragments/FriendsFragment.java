@@ -65,7 +65,7 @@ public class FriendsFragment extends Fragment {
 
         mPicasso = new Picasso.Builder(getActivity()).build();
 
-        mAdapter = new FriendsAdapter( getActivity() );
+        mAdapter = new FriendsAdapter();
         mAdapter.setImageLoader(mPicasso);
 
         mFriendsList.setLayoutManager(new LinearLayoutManager(getActivity()));

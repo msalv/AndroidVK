@@ -13,18 +13,17 @@ import com.vk.sdk.api.model.VKApiUserFull;
 import com.vk.sdk.api.model.VKList;
 
 import org.kirillius.friendslist.R;
+import org.kirillius.friendslist.core.AppLoader;
 
 /**
  * Created by Kirill on 09.12.2015.
  */
 public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHolder> {
 
-    private Context mContext;
     private VKList<VKApiUserFull> mItems;
     private Picasso mImageLoader;
 
-    public FriendsAdapter(Context context) {
-        mContext = context;
+    public FriendsAdapter() {
     }
 
     public void setItems(VKList<VKApiUserFull> items) {
@@ -49,7 +48,9 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
         this.mImageLoader.load(friend.photo_100).into(holder.photoView);
 
         holder.nameView.setText(friend.toString());
-        holder.onlineView.setText(friend.online ? mContext.getString(R.string.online) : mContext.getString(R.string.offline));
+
+        Context context = AppLoader.getAppContext();
+        holder.onlineView.setText(friend.online ? context.getString(R.string.online) : context.getString(R.string.offline));
     }
 
     @Override
