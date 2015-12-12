@@ -91,11 +91,6 @@ public class FriendsFragment extends Fragment {
                 Toast.makeText(getActivity(), "API error", Toast.LENGTH_SHORT).show();
                 Log.e(TAG, error.toString());
             }
-
-            @Override
-            public void attemptFailed(VKRequest request, int attemptNumber, int totalAttempts) {
-                Toast.makeText(getActivity(), "Connection error", Toast.LENGTH_SHORT).show();
-            }
         });
 
     }
