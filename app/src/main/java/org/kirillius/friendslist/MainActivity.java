@@ -1,5 +1,7 @@
 package org.kirillius.friendslist;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +21,7 @@ import com.vk.sdk.api.VKResponse;
 import com.vk.sdk.api.model.VKApiUserFull;
 import com.vk.sdk.api.model.VKList;
 
+import org.kirillius.friendslist.fragments.FriendsFragment;
 import org.kirillius.friendslist.ui.FriendsAdapter;
 
 public class MainActivity extends AppCompatActivity {
@@ -37,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
             VKSdk.login(this, "friends,offline");
         }
         else {
-            fetchFriends();
+            showFriends();
         }
     }
 
@@ -47,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResult(VKAccessToken res) {
                 // Пользователь успешно авторизовался
-                fetchFriends();
+                showFriends();
             }
 
             @Override
@@ -60,6 +63,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void showFriends() {
+        FriendsFragment fragment = FriendsFragment.newInstance(null);
 
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragments_container, fragment, FriendsFragment.TAG);
+        fragmentTransaction.commit();
     }
+
 }
