@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
 import com.vk.sdk.api.VKApi;
 import com.vk.sdk.api.VKError;
 import com.vk.sdk.api.VKParameters;
@@ -29,6 +30,7 @@ public class FriendsFragment extends Fragment {
     private FriendsAdapter mAdapter;
 
     private VKRequest mCurrentRequest;
+    private Picasso mPicasso;
 
     public FriendsFragment() {
         // Required empty public constructor
@@ -61,9 +63,12 @@ public class FriendsFragment extends Fragment {
         mFriendsList = (RecyclerView) rootView.findViewById(R.id.friends_list);
         mFriendsList.setHasFixedSize(true);
 
-        mAdapter = new FriendsAdapter( getActivity() );
+        mPicasso = new Picasso.Builder(getActivity()).build();
 
-        mFriendsList.setLayoutManager(new LinearLayoutManager( getActivity() ));
+        mAdapter = new FriendsAdapter( getActivity() );
+        mAdapter.setImageLoader(mPicasso);
+
+        mFriendsList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mFriendsList.setAdapter(mAdapter);
 
         fetchFriends();
@@ -103,6 +108,7 @@ public class FriendsFragment extends Fragment {
      * @param items List of friends
      */
     private void updateFriendsList(VKList<VKApiUserFull> items) {
+        mCurrentRequest = null;
         mAdapter.setItems(items);
     }
 
@@ -111,11 +117,35 @@ public class FriendsFragment extends Fragment {
      * @param error VKError
      */
     private void showError(VKError error) {
+        mCurrentRequest = null;
+
         // todo: show more detailed info in a convenient way
         Toast.makeText(getActivity(), "Error during request", Toast.LENGTH_SHORT).show();
 
         if (error != null) {
             Log.e(TAG, error.toString());
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if (mCurrentRequest != null) {
+            mCurrentRequest.cancel();
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        mFriendsList = null;
+        mAdapter = null;
+
+        if ( mPicasso != null ) {
+            mPicasso.shutdown();
+        }
+        mPicasso = null;
+
+        super.onDestroyView();
     }
 }

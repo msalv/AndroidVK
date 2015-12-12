@@ -1,11 +1,7 @@
 package org.kirillius.friendslist.ui;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +12,7 @@ import com.squareup.picasso.Picasso;
 import com.vk.sdk.api.model.VKApiUserFull;
 import com.vk.sdk.api.model.VKList;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.kirillius.friendslist.R;
-
-import java.io.InputStream;
 
 /**
  * Created by Kirill on 09.12.2015.
@@ -30,6 +21,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
 
     private Context mContext;
     private VKList<VKApiUserFull> mItems;
+    private Picasso mImageLoader;
 
     public FriendsAdapter(Context context) {
         mContext = context;
@@ -54,7 +46,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
         VKApiUserFull friend = mItems.get(position);
 
         // fixme: choose appropriate image size
-        Picasso.with(mContext).load(friend.photo_100).into(holder.photoView);
+        this.mImageLoader.load(friend.photo_100).into(holder.photoView);
 
         holder.nameView.setText(friend.toString());
         holder.onlineView.setText(friend.online ? mContext.getString(R.string.online) : mContext.getString(R.string.offline));
@@ -63,6 +55,10 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
     @Override
     public int getItemCount() {
         return mItems != null ? mItems.size() : 0;
+    }
+
+    public void setImageLoader(Picasso imageLoader) {
+        this.mImageLoader = imageLoader;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
