@@ -20,6 +20,7 @@ import com.vk.sdk.api.model.VKApiUserFull;
 import com.vk.sdk.api.model.VKList;
 
 import org.kirillius.friendslist.R;
+import org.kirillius.friendslist.core.AppLoader;
 import org.kirillius.friendslist.ui.FriendsAdapter;
 
 public class FriendsFragment extends Fragment {
@@ -119,11 +120,13 @@ public class FriendsFragment extends Fragment {
     private void showError(VKError error) {
         mCurrentRequest = null;
 
-        // todo: show more detailed info in a convenient way
-        Toast.makeText(getActivity(), "Error during request", Toast.LENGTH_SHORT).show();
-
         if (error != null) {
             Log.e(TAG, error.toString());
+
+            if ( error.errorCode != VKError.VK_CANCELED ) {
+                // todo: show more detailed info in a convenient way
+                Toast.makeText(AppLoader.getAppContext(), "Error during request", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

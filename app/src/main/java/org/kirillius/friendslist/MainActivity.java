@@ -21,6 +21,7 @@ import com.vk.sdk.api.VKResponse;
 import com.vk.sdk.api.model.VKApiUserFull;
 import com.vk.sdk.api.model.VKList;
 
+import org.kirillius.friendslist.core.AppLoader;
 import org.kirillius.friendslist.fragments.FriendsFragment;
 import org.kirillius.friendslist.ui.FriendsAdapter;
 
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onError(VKError error) {
                 // Произошла ошибка авторизации (например, пользователь запретил авторизацию)
-                Toast.makeText(getApplicationContext(), "Authorization error", Toast.LENGTH_LONG).show();
+                Toast.makeText(AppLoader.getAppContext(), "Authorization error", Toast.LENGTH_LONG).show();
             }
         })) {
             super.onActivityResult(requestCode, resultCode, data);
