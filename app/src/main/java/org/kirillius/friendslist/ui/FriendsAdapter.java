@@ -77,6 +77,10 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
         return mItems.size();
     }
 
+    /**
+     * Sets internal Picasso instance
+     * @param imageLoader
+     */
     public void setImageLoader(Picasso imageLoader) {
         this.mImageLoader = imageLoader;
     }
