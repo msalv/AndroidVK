@@ -26,7 +26,9 @@ import org.kirillius.friendslist.ui.FriendsAdapter;
 public class FriendsFragment extends Fragment {
 
     public static final String TAG = "FriendsFragment";
+    private static final int FRIENDS_COUNT = 1000;
 
+    private LinearLayoutManager mLayoutManager;
     private RecyclerView mFriendsList;
     private FriendsAdapter mAdapter;
 
@@ -69,8 +71,36 @@ public class FriendsFragment extends Fragment {
         mAdapter = new FriendsAdapter();
         mAdapter.setImageLoader(mPicasso);
 
-        mFriendsList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mLayoutManager = new LinearLayoutManager(getActivity());
+
+        mFriendsList.setLayoutManager(mLayoutManager);
         mFriendsList.setAdapter(mAdapter);
+
+        mFriendsList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 0) {
+
+                    if (mAdapter.getItemCount() >= mAdapter.getTotalCount()) {
+                        return;
+                    }
+
+                    int onScreen = mLayoutManager.getChildCount();
+                    int scrolled = mLayoutManager.findFirstVisibleItemPosition();
+                    int border = (int)Math.floor((mAdapter.getItemCount() - onScreen) * 0.75);
+
+                    // fetch more when scroll over 75% of already shown items
+                    if (scrolled >= border) {
+
+                        if( mCurrentRequest == null) {
+                            fetchMoreFriends();
+                        }
+
+                    }
+                }
+            }
+        });
 
         fetchFriends();
 
@@ -83,7 +113,9 @@ public class FriendsFragment extends Fragment {
     private void fetchFriends() {
         mCurrentRequest = VKApi.friends().get(VKParameters.from(
                 "order", "hints",
-                "fields", "online,photo_50,photo_100,photo_200,photo_400"
+                "fields", "online,photo_50,photo_100,photo_200,photo_400",
+                "offset", 0,
+                "count", FRIENDS_COUNT
         ));
 
         mCurrentRequest.executeWithListener(new VKRequest.VKRequestListener() {
@@ -91,8 +123,35 @@ public class FriendsFragment extends Fragment {
             public void onComplete(VKResponse response) {
                 if (response.parsedModel instanceof VKList) {
                     updateFriendsList((VKList<VKApiUserFull>) response.parsedModel);
+                } else {
+                    showError(null);
                 }
-                else {
+            }
+
+            @Override
+            public void onError(VKError error) {
+                showError(error);
+            }
+        });
+    }
+
+    /**
+     * Fetches more friends of the current user
+     */
+    private void fetchMoreFriends() {
+        mCurrentRequest = VKApi.friends().get(VKParameters.from(
+                "order", "hints",
+                "fields", "online,photo_50,photo_100,photo_200,photo_400",
+                "offset", mAdapter.getItemCount(),
+                "count", FRIENDS_COUNT
+        ));
+
+        mCurrentRequest.executeWithListener(new VKRequest.VKRequestListener() {
+            @Override
+            public void onComplete(VKResponse response) {
+                if (response.parsedModel instanceof VKList) {
+                    appendToFriendsList((VKList<VKApiUserFull>) response.parsedModel);
+                } else {
                     showError(null);
                 }
             }
@@ -111,6 +170,15 @@ public class FriendsFragment extends Fragment {
     private void updateFriendsList(VKList<VKApiUserFull> items) {
         mCurrentRequest = null;
         mAdapter.setItems(items);
+    }
+
+    /**
+     * Adds more friends to the list
+     * @param items List of friends
+     */
+    private void appendToFriendsList(VKList<VKApiUserFull> items) {
+        mCurrentRequest = null;
+        mAdapter.addItems(items);
     }
 
     /**
@@ -143,6 +211,7 @@ public class FriendsFragment extends Fragment {
     public void onDestroyView() {
         mFriendsList = null;
         mAdapter = null;
+        mLayoutManager = null;
 
         if ( mPicasso != null ) {
             mPicasso.shutdown();
