@@ -27,6 +27,7 @@ public class FriendsFragment extends Fragment {
 
     public static final String TAG = "FriendsFragment";
     private static final int FRIENDS_COUNT = 1000;
+    private static final String REQUEST_FIELDS = "online,photo_50,photo_100,photo_200,photo_400";
 
     private LinearLayoutManager mLayoutManager;
     private RecyclerView mFriendsList;
@@ -113,7 +114,7 @@ public class FriendsFragment extends Fragment {
     private void fetchFriends() {
         mCurrentRequest = VKApi.friends().get(VKParameters.from(
                 "order", "hints",
-                "fields", "online,photo_50,photo_100,photo_200,photo_400",
+                "fields", REQUEST_FIELDS,
                 "offset", 0,
                 "count", FRIENDS_COUNT
         ));
@@ -141,7 +142,7 @@ public class FriendsFragment extends Fragment {
     private void fetchMoreFriends() {
         mCurrentRequest = VKApi.friends().get(VKParameters.from(
                 "order", "hints",
-                "fields", "online,photo_50,photo_100,photo_200,photo_400",
+                "fields", REQUEST_FIELDS,
                 "offset", mAdapter.getItemCount(),
                 "count", FRIENDS_COUNT
         ));
