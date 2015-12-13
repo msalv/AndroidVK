@@ -30,7 +30,7 @@ public class FriendsFragment extends Fragment {
     private static final String REQUEST_FIELDS = "online,photo_50,photo_100,photo_200,photo_400";
 
     private LinearLayoutManager mLayoutManager;
-    private RecyclerView mFriendsList;
+    private RecyclerView mFriendsListView;
     private FriendsAdapter mAdapter;
 
     private VKRequest mCurrentRequest;
@@ -64,8 +64,8 @@ public class FriendsFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_friends, container, false);
 
-        mFriendsList = (RecyclerView) rootView.findViewById(R.id.friends_list);
-        mFriendsList.setHasFixedSize(true);
+        mFriendsListView = (RecyclerView) rootView.findViewById(R.id.friends_list);
+        mFriendsListView.setHasFixedSize(true);
 
         mPicasso = new Picasso.Builder(getActivity()).build();
 
@@ -74,10 +74,10 @@ public class FriendsFragment extends Fragment {
 
         mLayoutManager = new LinearLayoutManager(getActivity());
 
-        mFriendsList.setLayoutManager(mLayoutManager);
-        mFriendsList.setAdapter(mAdapter);
+        mFriendsListView.setLayoutManager(mLayoutManager);
+        mFriendsListView.setAdapter(mAdapter);
 
-        mFriendsList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mFriendsListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -89,12 +89,12 @@ public class FriendsFragment extends Fragment {
 
                     int onScreen = mLayoutManager.getChildCount();
                     int scrolled = mLayoutManager.findFirstVisibleItemPosition();
-                    int border = (int)Math.floor((mAdapter.getItemCount() - onScreen) * 0.75);
+                    int border = (int) Math.floor((mAdapter.getItemCount() - onScreen) * 0.75);
 
                     // fetch more when scroll over 75% of already shown items
                     if (scrolled >= border) {
 
-                        if( mCurrentRequest == null) {
+                        if (mCurrentRequest == null) {
                             fetchMoreFriends();
                         }
 
@@ -210,7 +210,7 @@ public class FriendsFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-        mFriendsList = null;
+        mFriendsListView = null;
         mAdapter = null;
         mLayoutManager = null;
 
