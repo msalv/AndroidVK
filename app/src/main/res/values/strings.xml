@@ -4,4 +4,7 @@
     <string name="offline">Offline</string>
     <string name="request_error">There was an error during request. Please check network settings and try again</string>
     <integer name="com_vk_sdk_AppId">5181961</integer>
+
+    <string name="sign_in">SIGN IN</string>
+    <string name="auth_error">An error occurred while trying to sign in. Please try again</string>
 </resources>
