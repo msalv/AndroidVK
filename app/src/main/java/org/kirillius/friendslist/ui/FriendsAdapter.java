@@ -27,7 +27,14 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
     public FriendsAdapter() {
     }
 
+    /**
+     * Sets new collection of items
+     * @param items
+     */
     public void setItems(VKList<VKApiUserFull> items) {
+        if (items == null) {
+            throw new NullPointerException("items == null");
+        }
         mItems = items;
         notifyDataSetChanged();
     }
