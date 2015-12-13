@@ -21,7 +21,7 @@ import org.kirillius.friendslist.core.AppLoader;
  */
 public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHolder> {
 
-    private VKList<VKApiUserFull> mItems;
+    private VKList<VKApiUserFull> mItems = new VKList<>();
     private Picasso mImageLoader;
 
     public FriendsAdapter() {
@@ -64,7 +64,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
 
     @Override
     public int getItemCount() {
-        return mItems != null ? mItems.size() : 0;
+        return mItems.size();
     }
 
     public void setImageLoader(Picasso imageLoader) {
