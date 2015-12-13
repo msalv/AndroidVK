@@ -81,6 +81,14 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
         this.mImageLoader = imageLoader;
     }
 
+    /**
+     * Returns total number of friends
+     * @return count
+     */
+    public int getTotalCount() {
+        return mItems.getCount();
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView photoView;
         public TextView nameView;
