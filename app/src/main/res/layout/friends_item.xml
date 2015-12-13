@@ -30,9 +30,9 @@
         android:layout_toEndOf="@+id/photo" />
 
     <TextView android:id="@+id/online"
-        android:text=""
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text=""
         android:textSize="14sp"
         android:textColor="@color/colorTextSmall"
         android:layout_below="@+id/name"
