@@ -39,6 +39,16 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
         notifyDataSetChanged();
     }
 
+    /**
+     * Adds new items to the collection
+     * @param items
+     */
+    public void addItems(VKList<VKApiUserFull> items) {
+        int position = mItems.size();
+        mItems.addAll(items);
+        notifyItemRangeInserted(position, items.size());
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
