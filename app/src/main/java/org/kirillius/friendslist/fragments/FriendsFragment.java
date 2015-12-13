@@ -193,7 +193,6 @@ public class FriendsFragment extends Fragment {
             Log.e(TAG, error.toString());
 
             if ( error.errorCode != VKError.VK_CANCELED ) {
-                // todo: show more detailed info in a convenient way?
                 Toast.makeText(AppLoader.getAppContext(), R.string.request_error, Toast.LENGTH_SHORT).show();
             }
         }
