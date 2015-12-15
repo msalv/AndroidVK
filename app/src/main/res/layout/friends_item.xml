@@ -5,8 +5,7 @@
     android:background="?android:attr/selectableItemBackground"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    android:clickable="true"
-    android:orientation="horizontal">
+    android:clickable="true">
 
     <ImageView android:id="@+id/photo"
         android:layout_width="48dip"
