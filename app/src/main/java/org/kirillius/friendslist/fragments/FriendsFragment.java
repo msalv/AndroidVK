@@ -26,7 +26,7 @@ import org.kirillius.friendslist.ui.FriendsAdapter;
 public class FriendsFragment extends Fragment {
 
     public static final String TAG = "FriendsFragment";
-    private static final int FRIENDS_COUNT = 1000;
+    private static final int FRIENDS_COUNT = 20;
     private static final String REQUEST_FIELDS = "online,photo_50,photo_100,photo_200,photo_400";
 
     private LinearLayoutManager mLayoutManager;
@@ -147,9 +147,12 @@ public class FriendsFragment extends Fragment {
                 "count", FRIENDS_COUNT
         ));
 
+        mAdapter.showLoader();
+
         mCurrentRequest.executeWithListener(new VKRequest.VKRequestListener() {
             @Override
             public void onComplete(VKResponse response) {
+                mAdapter.hideLoader();
                 if (response.parsedModel instanceof VKList) {
                     appendToFriendsList((VKList<VKApiUserFull>) response.parsedModel);
                 } else {
@@ -159,6 +162,7 @@ public class FriendsFragment extends Fragment {
 
             @Override
             public void onError(VKError error) {
+                mAdapter.hideLoader();
                 showError(error);
             }
         });
