@@ -3,9 +3,13 @@ package org.kirillius.friendslist;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
@@ -20,6 +24,15 @@ import org.kirillius.friendslist.fragments.LoginErrorFragment;
 import org.kirillius.friendslist.fragments.FriendsFragment;
 
 public class MainActivity extends AppCompatActivity implements LoginErrorFragment.OnLoginAttemptListener {
+
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if ( "org.kirillius.friendslist.ACCESS_TOKEN_INVALID".equals(intent.getAction()) ) {
+                login();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,5 +111,20 @@ public class MainActivity extends AppCompatActivity implements LoginErrorFragmen
     @Override
     public void onLoginAttempt() {
         this.login();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(AppLoader.getAppContext()).registerReceiver(
+                mReceiver,
+                new IntentFilter("org.kirillius.friendslist.ACCESS_TOKEN_INVALID")
+        );
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(AppLoader.getAppContext()).unregisterReceiver(mReceiver);
     }
 }

@@ -2,6 +2,8 @@ package org.kirillius.friendslist.core;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.vk.sdk.VKAccessToken;
@@ -19,6 +21,8 @@ public class AppLoader extends Application {
         @Override
         public void onVKAccessTokenChanged(VKAccessToken oldToken, VKAccessToken newToken) {
             if (newToken == null) {
+                Intent intent = new Intent("org.kirillius.friendslist.ACCESS_TOKEN_INVALID");
+                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
                 Log.e("friends", "VKAccessToken is invalid");
             }
         }
