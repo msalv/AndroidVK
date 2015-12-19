@@ -54,22 +54,23 @@ public class FriendsAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v;
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view;
+        Holder holder = null;
 
         switch (viewType) {
-            case PROGRESS_VIEW_TYPE:
-                v = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.friends_progress, parent, false);
-                return new ProgressViewHolder(v);
-
             case ITEM_VIEW_TYPE:
-            default:
-               v = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.friends_item, parent, false);
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.friends_item, parent, false);
+                holder = new ItemHolder(view);
+                break;
 
-               return new ItemViewHolder(v);
+            case PROGRESS_VIEW_TYPE:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.friends_progress, parent, false);
+                holder = new Holder(view);
+                break;
         }
+
+        return holder;
     }
 
     @Override
