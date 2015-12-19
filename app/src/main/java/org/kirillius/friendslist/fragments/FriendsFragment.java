@@ -34,6 +34,7 @@ public class FriendsFragment extends Fragment {
     private FriendsAdapter mAdapter;
 
     private VKRequest mCurrentRequest;
+    private Toast mCurrentToast;
     private Picasso mPicasso;
 
     public FriendsFragment() {
@@ -197,7 +198,11 @@ public class FriendsFragment extends Fragment {
             Log.e(TAG, error.toString());
 
             if ( error.errorCode != VKError.VK_CANCELED ) {
-                Toast.makeText(AppLoader.getAppContext(), R.string.request_error, Toast.LENGTH_SHORT).show();
+                if ( mCurrentToast != null ) {
+                    mCurrentToast.cancel();
+                }
+                mCurrentToast = Toast.makeText(AppLoader.getAppContext(), R.string.request_error, Toast.LENGTH_SHORT);
+                mCurrentToast.show();
             }
         }
     }
@@ -221,6 +226,11 @@ public class FriendsFragment extends Fragment {
             mPicasso.shutdown();
         }
         mPicasso = null;
+
+        if ( mCurrentToast != null ) {
+            mCurrentToast.cancel();
+        }
+        mCurrentToast = null;
 
         super.onDestroyView();
     }
