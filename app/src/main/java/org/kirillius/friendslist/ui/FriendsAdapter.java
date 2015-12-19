@@ -2,7 +2,6 @@ package org.kirillius.friendslist.ui;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,7 @@ import org.kirillius.friendslist.core.AppLoader;
 /**
  * Created by Kirill on 09.12.2015.
  */
-public class FriendsAdapter extends RecyclerView.Adapter<ViewHolder> {
+public class FriendsAdapter extends RecyclerView.Adapter {
 
     public static final int ITEM_VIEW_TYPE = 1;
     public static final int PROGRESS_VIEW_TYPE = 2;
@@ -131,26 +130,23 @@ public class FriendsAdapter extends RecyclerView.Adapter<ViewHolder> {
         }
     }
 
+    public static class Holder extends RecyclerView.ViewHolder {
+        public Holder(View itemView) {
+            super(itemView);
+        }
     }
 
-    public static class ItemViewHolder extends ViewHolder {
+    public static class ItemHolder extends Holder {
         public ImageView photoView;
         public TextView nameView;
         public TextView onlineView;
 
-        public ItemViewHolder(View itemView) {
+        public ItemHolder(View itemView) {
             super(itemView);
 
             photoView = (ImageView) itemView.findViewById(R.id.photo);
             nameView = (TextView) itemView.findViewById(R.id.name);
             onlineView = (TextView) itemView.findViewById(R.id.online);
-        }
-    }
-
-    public static class ProgressViewHolder extends ViewHolder {
-
-        public ProgressViewHolder(View itemView) {
-            super(itemView);
         }
     }
 }
