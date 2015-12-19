@@ -73,24 +73,21 @@ public class FriendsAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder vh, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder vh, int position) {
+        if (vh instanceof ItemHolder) {
+            ItemHolder holder = (ItemHolder) vh;
 
-        if (vh instanceof ProgressViewHolder) {
-            return;
+            VKApiUserFull friend = mItems.get(position);
+
+            int size = AndroidUtilities.dp(48);
+            String photo = friend.photo.getImageForDimension(size, size);
+            this.mImageLoader.load(photo).into(holder.photoView);
+
+            holder.nameView.setText(friend.toString());
+
+            Context context = AppLoader.getAppContext();
+            holder.onlineView.setText(friend.online ? context.getString(R.string.online) : context.getString(R.string.offline));
         }
-
-        ItemViewHolder holder = (ItemViewHolder) vh;
-
-        VKApiUserFull friend = mItems.get(position);
-
-        int size = AndroidUtilities.dp(48);
-        String photo = friend.photo.getImageForDimension(size, size);
-        this.mImageLoader.load(photo).into(holder.photoView);
-
-        holder.nameView.setText(friend.toString());
-
-        Context context = AppLoader.getAppContext();
-        holder.onlineView.setText(friend.online ? context.getString(R.string.online) : context.getString(R.string.offline));
     }
 
     @Override
