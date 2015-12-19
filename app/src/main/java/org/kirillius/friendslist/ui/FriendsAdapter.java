@@ -101,7 +101,7 @@ public class FriendsAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemViewType(int position) {
-        return mItems.get(position) == null ? PROGRESS_VIEW_TYPE : ITEM_VIEW_TYPE;
+        return mIsLoading && mItems.size() == position ? PROGRESS_VIEW_TYPE : ITEM_VIEW_TYPE;
     }
 
     /**
