@@ -34,6 +34,7 @@ public class FriendsFragment extends Fragment {
     private FriendsAdapter mAdapter;
 
     private VKRequest mCurrentRequest;
+    private Toast mCurrentToast;
     private Picasso mPicasso;
 
     public FriendsFragment() {
@@ -147,9 +148,12 @@ public class FriendsFragment extends Fragment {
                 "count", FRIENDS_COUNT
         ));
 
+        mAdapter.setIsLoading(true);
+
         mCurrentRequest.executeWithListener(new VKRequest.VKRequestListener() {
             @Override
             public void onComplete(VKResponse response) {
+                mAdapter.setIsLoading(false);
                 if (response.parsedModel instanceof VKList) {
                     appendToFriendsList((VKList<VKApiUserFull>) response.parsedModel);
                 } else {
@@ -159,6 +163,7 @@ public class FriendsFragment extends Fragment {
 
             @Override
             public void onError(VKError error) {
+                mAdapter.setIsLoading(false);
                 showError(error);
             }
         });
@@ -193,7 +198,11 @@ public class FriendsFragment extends Fragment {
             Log.e(TAG, error.toString());
 
             if ( error.errorCode != VKError.VK_CANCELED ) {
-                Toast.makeText(AppLoader.getAppContext(), R.string.request_error, Toast.LENGTH_SHORT).show();
+                if ( mCurrentToast != null ) {
+                    mCurrentToast.cancel();
+                }
+                mCurrentToast = Toast.makeText(AppLoader.getAppContext(), R.string.request_error, Toast.LENGTH_SHORT);
+                mCurrentToast.show();
             }
         }
     }
@@ -217,6 +226,11 @@ public class FriendsFragment extends Fragment {
             mPicasso.shutdown();
         }
         mPicasso = null;
+
+        if ( mCurrentToast != null ) {
+            mCurrentToast.cancel();
+        }
+        mCurrentToast = null;
 
         super.onDestroyView();
     }

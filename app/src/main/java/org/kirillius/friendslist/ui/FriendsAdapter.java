@@ -19,10 +19,14 @@ import org.kirillius.friendslist.core.AppLoader;
 /**
  * Created by Kirill on 09.12.2015.
  */
-public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHolder> {
+public class FriendsAdapter extends RecyclerView.Adapter {
+
+    public static final int ITEM_VIEW_TYPE = 1;
+    public static final int PROGRESS_VIEW_TYPE = 2;
 
     private VKList<VKApiUserFull> mItems = new VKList<>();
     private Picasso mImageLoader;
+    private boolean mIsLoading = false;
 
     public FriendsAdapter() {
     }
@@ -50,31 +54,52 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.friends_item, parent, false);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view;
+        Holder holder = null;
 
-        return new ViewHolder(v);
+        switch (viewType) {
+            case ITEM_VIEW_TYPE:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.friends_item, parent, false);
+                holder = new ItemHolder(view);
+                break;
+
+            case PROGRESS_VIEW_TYPE:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.friends_progress, parent, false);
+                holder = new Holder(view);
+                break;
+        }
+
+        return holder;
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder vh, int position) {
+        if (vh instanceof ItemHolder) {
+            ItemHolder holder = (ItemHolder) vh;
 
-        VKApiUserFull friend = mItems.get(position);
+            VKApiUserFull friend = mItems.get(position);
 
-        int size = AndroidUtilities.dp(48);
-        String photo = friend.photo.getImageForDimension(size, size);
-        this.mImageLoader.load(photo).into(holder.photoView);
+            int size = AndroidUtilities.dp(48);
+            String photo = friend.photo.getImageForDimension(size, size);
+            this.mImageLoader.load(photo).into(holder.photoView);
 
-        holder.nameView.setText(friend.toString());
+            holder.nameView.setText(friend.toString());
 
-        Context context = AppLoader.getAppContext();
-        holder.onlineView.setText(friend.online ? context.getString(R.string.online) : context.getString(R.string.offline));
+            Context context = AppLoader.getAppContext();
+            holder.onlineView.setText(friend.online ? context.getString(R.string.online) : context.getString(R.string.offline));
+        }
     }
 
     @Override
     public int getItemCount() {
-        return mItems.size();
+        int size = mItems.size();
+        return !mIsLoading ? size : size + 1;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return mIsLoading && mItems.size() == position ? PROGRESS_VIEW_TYPE : ITEM_VIEW_TYPE;
     }
 
     /**
@@ -93,12 +118,29 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
         return mItems.getCount();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public void setIsLoading(boolean loading) {
+        mIsLoading = loading;
+
+        if (mIsLoading) {
+            notifyItemInserted( mItems.size() );
+        }
+        else {
+            notifyItemRemoved( mItems.size() );
+        }
+    }
+
+    public static class Holder extends RecyclerView.ViewHolder {
+        public Holder(View itemView) {
+            super(itemView);
+        }
+    }
+
+    public static class ItemHolder extends Holder {
         public ImageView photoView;
         public TextView nameView;
         public TextView onlineView;
 
-        public ViewHolder(View itemView) {
+        public ItemHolder(View itemView) {
             super(itemView);
 
             photoView = (ImageView) itemView.findViewById(R.id.photo);
