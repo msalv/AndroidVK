@@ -148,12 +148,12 @@ public class FriendsFragment extends Fragment {
                 "count", FRIENDS_COUNT
         ));
 
-        mAdapter.showLoader();
+        mAdapter.setIsLoading(true);
 
         mCurrentRequest.executeWithListener(new VKRequest.VKRequestListener() {
             @Override
             public void onComplete(VKResponse response) {
-                mAdapter.hideLoader();
+                mAdapter.setIsLoading(false);
                 if (response.parsedModel instanceof VKList) {
                     appendToFriendsList((VKList<VKApiUserFull>) response.parsedModel);
                 } else {
@@ -163,7 +163,7 @@ public class FriendsFragment extends Fragment {
 
             @Override
             public void onError(VKError error) {
-                mAdapter.hideLoader();
+                mAdapter.setIsLoading(false);
                 showError(error);
             }
         });
