@@ -27,6 +27,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     private VKList<VKApiUserFull> mItems = new VKList<>();
     private Picasso mImageLoader;
+    private boolean mIsLoading = false;
 
     public FriendsAdapter() {
     }
@@ -119,15 +120,17 @@ public class FriendsAdapter extends RecyclerView.Adapter<ViewHolder> {
         return mItems.getCount();
     }
 
-    public void showLoader() {
-        mItems.add(null);
-        notifyItemInserted( mItems.size() - 1 );
+    public void setIsLoading(boolean loading) {
+        mIsLoading = loading;
+
+        if (mIsLoading) {
+            notifyItemInserted( mItems.size() );
+        }
+        else {
+            notifyItemRemoved( mItems.size() );
+        }
     }
 
-    public void hideLoader() {
-        int position = mItems.size() - 1;
-        mItems.remove(position);
-        notifyItemRemoved(position);
     }
 
     public static class ItemViewHolder extends ViewHolder {
