@@ -82,7 +82,9 @@ public class FriendsAdapter extends RecyclerView.Adapter {
 
             int size = AndroidUtilities.dp(48);
             String photo = friend.photo.getImageForDimension(size, size);
-            this.mImageLoader.load(photo).into(holder.photoView);
+            this.mImageLoader.load(photo)
+                    .placeholder(R.drawable.ic_person)
+                    .into(holder.photoView);
 
             holder.nameView.setText(friend.toString());
 
