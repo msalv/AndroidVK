@@ -27,8 +27,10 @@ public class FriendsAdapter extends RecyclerView.Adapter {
     private VKList<VKApiUserFull> mItems = new VKList<>();
     private Picasso mImageLoader;
     private boolean mIsLoading = false;
+    private StringBuilder mStringBuilder;
 
     public FriendsAdapter() {
+        mStringBuilder = new StringBuilder();
     }
 
     /**
@@ -84,9 +86,13 @@ public class FriendsAdapter extends RecyclerView.Adapter {
             String photo = friend.photo.getImageForDimension(size, size);
             this.mImageLoader.load(photo)
                     .placeholder(R.drawable.ic_person)
+                    .fit().centerCrop()
                     .into(holder.photoView);
 
-            holder.nameView.setText(friend.toString());
+            //holder.nameView.setText(friend.toString());
+            mStringBuilder.setLength(0);
+            mStringBuilder.append(friend.first_name).append(' ').append(friend.last_name);
+            holder.nameView.setText(mStringBuilder);
 
             Context context = AppLoader.getAppContext();
             holder.onlineView.setText(friend.online ? context.getString(R.string.online) : context.getString(R.string.offline));
