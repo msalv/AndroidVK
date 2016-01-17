@@ -86,7 +86,7 @@ public class DialogFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-        // todo: clean up here
+        mFriend = null;
         super.onDestroyView();
     }
 }
