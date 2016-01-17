@@ -20,10 +20,12 @@ import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKError;
 
 import org.kirillius.friendslist.core.AppLoader;
+import org.kirillius.friendslist.core.OnNavigationListener;
 import org.kirillius.friendslist.fragments.LoginErrorFragment;
 import org.kirillius.friendslist.fragments.FriendsFragment;
 
-public class MainActivity extends AppCompatActivity implements LoginErrorFragment.OnLoginAttemptListener {
+public class MainActivity extends AppCompatActivity implements LoginErrorFragment.OnLoginAttemptListener,
+        OnNavigationListener {
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
@@ -80,27 +82,47 @@ public class MainActivity extends AppCompatActivity implements LoginErrorFragmen
      * Shows friends list
      */
     private void showFriends() {
-        showFragment(new FriendsFragment(), FriendsFragment.TAG);
+        replaceFragmentWith(new FriendsFragment(), FriendsFragment.TAG);
     }
 
     /**
      * Shows login error fragment
      */
     private void showLoginError() {
-        showFragment(new LoginErrorFragment(), LoginErrorFragment.TAG);
+        replaceFragmentWith(new LoginErrorFragment(), LoginErrorFragment.TAG);
         Toast.makeText(AppLoader.getAppContext(), R.string.auth_error, Toast.LENGTH_LONG).show();
     }
 
     /**
-     * Shows a fragment
+     * Replaces current fragment with a specified one
      * @param fragment Fragment instance
      * @param tag String tag
      */
-    private void showFragment(Fragment fragment, String tag) {
+    private void replaceFragmentWith(Fragment fragment, String tag) {
+        showFragment(fragment, tag, false);
+    }
+
+    /**
+     * Shows a fragment. Allows to add specified fragment to the back stack
+     * @param fragment Fragment instance
+     * @param tag String tag
+     * @param addToBackStack Boolean flag whether to remember transaction's state or not
+     */
+    private void showFragment(Fragment fragment, String tag, boolean addToBackStack) {
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragments_container, fragment, tag);
+
+        if ( addToBackStack ) {
+            fragmentTransaction.addToBackStack(null);
+        }
+
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public void OnNavigatedTo(Fragment fragment, String tag) {
+        showFragment(fragment, tag, true);
     }
 
     @Override
@@ -126,5 +148,15 @@ public class MainActivity extends AppCompatActivity implements LoginErrorFragmen
     protected void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(AppLoader.getAppContext()).unregisterReceiver(mReceiver);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if ( getFragmentManager().getBackStackEntryCount() > 0 ) {
+            getFragmentManager().popBackStack();
+        }
+        else {
+            super.onBackPressed();
+        }
     }
 }
