@@ -121,6 +121,18 @@ public class FriendsAdapter extends RecyclerView.Adapter {
     }
 
     /**
+     * Returns object at specified position
+     * @param position index
+     * @return VKApiUserFull object
+     */
+    public VKApiUserFull getItem(int position) {
+        if ( position >= 0 && position < mItems.size() ) {
+            return mItems.get(position);
+        }
+        return null;
+    }
+
+    /**
      * Sets internal Picasso instance
      * @param imageLoader
      */
