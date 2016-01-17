@@ -100,6 +100,7 @@ public class DialogFragment extends Fragment {
     @Override
     public void onDestroyView() {
         mFriend = null;
+        mInputField = null;
         super.onDestroyView();
     }
 }
