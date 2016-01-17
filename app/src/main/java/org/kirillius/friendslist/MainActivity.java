@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity implements LoginErrorFragmen
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.app_name);
 
+        setSupportActionBar(toolbar);
+
         this.login();
     }
 
