@@ -14,12 +14,14 @@ import android.view.ViewGroup;
 import com.vk.sdk.api.model.VKApiUserFull;
 
 import org.kirillius.friendslist.R;
+import org.kirillius.friendslist.ui.ReplyTextView;
 
 public class DialogFragment extends Fragment {
     public static String TAG = "DialogFragment";
     private static final String ARG_FRIEND = "ARG_FRIEND";
 
     private VKApiUserFull mFriend;
+    private ReplyTextView mInputField;
 
     public DialogFragment() {
         // Required empty public constructor
@@ -76,7 +78,18 @@ public class DialogFragment extends Fragment {
 
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        return inflater.inflate(R.layout.fragment_dialog, container, false);
+        View view = inflater.inflate(R.layout.fragment_dialog, container, false);
+
+        mInputField = (ReplyTextView) view.findViewById(R.id.input_field);
+        mInputField.setOnSendClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, mInputField.getText()); // todo: send message
+                mInputField.clearInput();
+            }
+        });
+
+        return view;
     }
 
     @Override
