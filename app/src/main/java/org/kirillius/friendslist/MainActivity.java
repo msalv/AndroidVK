@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.vk.sdk.VKAccessToken;
@@ -154,11 +155,29 @@ public class MainActivity extends AppCompatActivity implements LoginErrorFragmen
 
     @Override
     public void onBackPressed() {
-        if ( getFragmentManager().getBackStackEntryCount() > 0 ) {
+        int stacked = getFragmentManager().getBackStackEntryCount();
+        if ( stacked > 0 ) {
             getFragmentManager().popBackStack();
+
+            if (stacked == 1) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            }
         }
         else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch ( id ) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
