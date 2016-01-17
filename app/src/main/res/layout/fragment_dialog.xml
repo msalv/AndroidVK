@@ -4,10 +4,10 @@
     android:layout_height="match_parent"
     tools:context="org.kirillius.friendslist.fragments.DialogFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <org.kirillius.friendslist.ui.ReplyTextView
+        android:id="@+id/input_field"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Hello blank fragment" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom" />
 
 </FrameLayout>
