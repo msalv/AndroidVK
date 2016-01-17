@@ -29,7 +29,7 @@ public class FriendsFragment extends Fragment {
 
     public static final String TAG = "FriendsFragment";
     private static final int FRIENDS_COUNT = 1000;
-    private static final String REQUEST_FIELDS = "online,photo_50,photo_100,photo_200,photo_400";
+    private static final String REQUEST_FIELDS = "online,last_seen,photo_50,photo_100,photo_200,photo_400";
 
     private LinearLayoutManager mLayoutManager;
     private RecyclerView mFriendsListView;
