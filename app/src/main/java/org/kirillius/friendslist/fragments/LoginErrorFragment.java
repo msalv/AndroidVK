@@ -49,7 +49,7 @@ public class LoginErrorFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Log.d(TAG, "Attached");
+
         if (context instanceof OnLoginAttemptListener) {
             mListener = (OnLoginAttemptListener) context;
         } else {

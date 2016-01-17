@@ -1,5 +1,6 @@
 package org.kirillius.friendslist.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,6 +22,7 @@ import com.vk.sdk.api.model.VKList;
 
 import org.kirillius.friendslist.R;
 import org.kirillius.friendslist.core.AppLoader;
+import org.kirillius.friendslist.core.OnNavigationListener;
 import org.kirillius.friendslist.ui.FriendsAdapter;
 
 public class FriendsFragment extends Fragment {
@@ -36,6 +38,7 @@ public class FriendsFragment extends Fragment {
     private VKRequest mCurrentRequest;
     private Toast mCurrentToast;
     private Picasso mPicasso;
+    private OnNavigationListener mOnNavigationListener;
 
     public FriendsFragment() {
         // Required empty public constructor
@@ -72,6 +75,20 @@ public class FriendsFragment extends Fragment {
 
         mAdapter = new FriendsAdapter();
         mAdapter.setImageLoader(mPicasso);
+
+        mAdapter.setOnItemClickListener(new FriendsAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View itemView, int position) {
+                VKApiUserFull user = mAdapter.getItem(position);
+
+                if ( user == null ) {
+                    return;
+                }
+
+                DialogFragment fragment = DialogFragment.newInstance(user);
+                mOnNavigationListener.OnNavigatedTo(fragment, DialogFragment.TAG);
+            }
+        });
 
         mLayoutManager = new LinearLayoutManager(getActivity());
 
@@ -205,6 +222,24 @@ public class FriendsFragment extends Fragment {
                 mCurrentToast.show();
             }
         }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if (context instanceof OnNavigationListener) {
+            mOnNavigationListener = (OnNavigationListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnNavigationListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mOnNavigationListener = null;
     }
 
     @Override
