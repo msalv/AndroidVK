@@ -29,6 +29,16 @@ public class FriendsAdapter extends RecyclerView.Adapter {
     private boolean mIsLoading = false;
     private StringBuilder mStringBuilder;
 
+    public interface OnItemClickListener {
+        void onItemClick(View itemView, int position);
+    }
+
+    private static OnItemClickListener clickListener;
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        clickListener = listener;
+    }
+
     public FriendsAdapter() {
         mStringBuilder = new StringBuilder();
     }
@@ -148,12 +158,21 @@ public class FriendsAdapter extends RecyclerView.Adapter {
         public TextView nameView;
         public TextView onlineView;
 
-        public ItemHolder(View itemView) {
+        public ItemHolder(final View itemView) {
             super(itemView);
 
             photoView = (ImageView) itemView.findViewById(R.id.photo);
             nameView = (TextView) itemView.findViewById(R.id.name);
             onlineView = (TextView) itemView.findViewById(R.id.online);
+
+            if (clickListener != null) {
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        clickListener.onItemClick(itemView, getLayoutPosition());
+                    }
+                });
+            }
         }
     }
 }
