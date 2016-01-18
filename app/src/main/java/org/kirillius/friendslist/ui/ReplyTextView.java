@@ -63,6 +63,7 @@ public class ReplyTextView extends FrameLayout {
         lp.gravity = Gravity.BOTTOM;
         lp.leftMargin = dp(12);
         lp.rightMargin = dp(52);
+
         mEditText.setLayoutParams(lp);
 
         mSendButton = new ImageView(context);
