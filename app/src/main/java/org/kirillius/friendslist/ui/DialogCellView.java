@@ -3,6 +3,7 @@ package org.kirillius.friendslist.ui;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,9 +22,10 @@ public class DialogCellView extends ViewGroup {
     private static int COLOR_BLUE = 0xffd8e5f5;
 
     private GradientDrawable mBackgroundDrawable;
+
     private View mBackgroundView;
-    private TextView mMessageTextView;
-    private ImageView mAttachedImage;
+    public TextView textView;
+    public ImageView image;
 
     private boolean mIsOutgoing = false;
 
@@ -62,50 +64,50 @@ public class DialogCellView extends ViewGroup {
         LayoutParams lp = (DialogCellView.LayoutParams) mBackgroundView.getLayoutParams();
         lp.width = LayoutParams.MATCH_PARENT;
 
-        lp.rightMargin = dp(48);
-        lp.leftMargin = 0;
+        //lp.rightMargin = dp(48);
+        //lp.leftMargin = 0;
         lp.topMargin = dp(8);
 
-        //mBackgroundView.setLayoutParams(lp);
+        mBackgroundView.setLayoutParams(lp);
 
-        mMessageTextView = new TextView(context);
-        mMessageTextView.setPadding(dp(16), dp(8), dp(16), dp(16));
-        mMessageTextView.setVisibility(GONE);
-        mMessageTextView.setTextColor(0xff2e3033);
+        textView = new TextView(context);
+        textView.setPadding(dp(16), dp(8), dp(16), dp(16));
+        textView.setVisibility(GONE);
+        textView.setTextColor(0xff2e3033);
 
-        addView(mMessageTextView);
+        addView(textView);
 
-        lp = (DialogCellView.LayoutParams) mMessageTextView.getLayoutParams();
+        lp = (DialogCellView.LayoutParams) textView.getLayoutParams();
         lp.width = LayoutParams.MATCH_PARENT;
         lp.height = LayoutParams.WRAP_CONTENT;
 
-        lp.rightMargin = dp(48);
-        lp.leftMargin = 0;
+        //lp.rightMargin = dp(48);
+        //lp.leftMargin = 0;
         lp.topMargin = dp(16);
 
-        //mMessageTextView.setLayoutParams(lp);
+        textView.setLayoutParams(lp);
 
-        mAttachedImage = new ImageView(context);
+        image = new ImageView(context);
 
-        mAttachedImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-        mAttachedImage.setImageResource(R.drawable.ic_image);
-        mAttachedImage.setBackgroundColor(0xffdfe6ee);
-        mAttachedImage.setVisibility(View.GONE);
+        image.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+        image.setImageResource(R.drawable.ic_image);
+        image.setBackgroundColor(0xffdfe6ee);
+        image.setVisibility(View.GONE);
 
-        addView(mAttachedImage);
+        addView(image);
 
-        lp = (DialogCellView.LayoutParams) mAttachedImage.getLayoutParams();
+        lp = (DialogCellView.LayoutParams) image.getLayoutParams();
         lp.width = LayoutParams.MATCH_PARENT;
-        lp.height = LayoutParams.WRAP_CONTENT;
+        lp.height = dp(100);
 
-        lp.rightMargin = dp(56);
-        lp.leftMargin = dp(8);
+        //lp.rightMargin = dp(56);
+        //lp.leftMargin = dp(8);
         lp.topMargin = dp(16);
         lp.bottomMargin = dp(8);
 
-        /*setText("A Drawable object that draws primitive shapes. A ShapeDrawable takes a Shape object and manages its presence on the screen. If no Shape is given, then the ShapeDrawable will default to a RectShape.\n" +
-                "This object can be defined in an XML file with the <shape> element. ");
-        hasImage();*/
+        image.setLayoutParams(lp);
+
+        stickToSide();
     }
 
     @Override
@@ -132,7 +134,7 @@ public class DialogCellView extends ViewGroup {
         int childrenAllHeight = 0;
 
         // measure text view
-        measureChildWithMargins(mMessageTextView, widthMeasureSpec, widthUsedByParent, heightMeasureSpec, heightUsedByParent);
+        measureChildWithMargins(textView, widthMeasureSpec, widthUsedByParent, heightMeasureSpec, heightUsedByParent);
 
         int childCount = getChildCount();
         for (int i = 1; i < childCount; i++) { // from 1 since we skipping background
@@ -211,26 +213,49 @@ public class DialogCellView extends ViewGroup {
      * Sticks cell to right
      */
     public void stickToRight() {
+        if ( mIsOutgoing == true ) {
+            return;
+        }
+
         mBackgroundDrawable.setColor(COLOR_BLUE);
         mIsOutgoing = true;
 
+        stickToSide();
+    }
+
+    /**
+     * Sticks cell to right
+     */
+    public void stickToLeft() {
+        if ( mIsOutgoing == false ) {
+            return;
+        }
+
+        mBackgroundDrawable.setColor(COLOR_GRAY);
+        mIsOutgoing = false;
+
+        stickToSide();
+    }
+
+    private void stickToSide() {
+
         LayoutParams lp = (DialogCellView.LayoutParams) mBackgroundView.getLayoutParams();
-        lp.rightMargin = 0;
-        lp.leftMargin = dp(48);
+        lp.rightMargin = mIsOutgoing ? 0 : dp(48);
+        lp.leftMargin = mIsOutgoing ? dp(48) : 0;
 
-        //mBackgroundView.setLayoutParams(lp);
+        mBackgroundView.setLayoutParams(lp);
 
-        lp = (LayoutParams) mMessageTextView.getLayoutParams();
-        lp.rightMargin = 0;
-        lp.leftMargin = dp(48);
+        lp = (DialogCellView.LayoutParams) textView.getLayoutParams();
+        lp.rightMargin = mIsOutgoing ? 0 : dp(48);
+        lp.leftMargin = mIsOutgoing ? dp(48) : 0;
 
-        //mMessageTextView.setLayoutParams(lp);
+        textView.setLayoutParams(lp);
 
-        lp = (DialogCellView.LayoutParams) mAttachedImage.getLayoutParams();
-        lp.rightMargin = dp(8);
-        lp.leftMargin = dp(56);
+        lp = (DialogCellView.LayoutParams) image.getLayoutParams();
+        lp.rightMargin = mIsOutgoing ? dp(8) : dp(56);
+        lp.leftMargin = mIsOutgoing ? dp(56) : dp(8);
 
-        //mAttachedImage.setLayoutParams(lp);
+        image.setLayoutParams(lp);
     }
 
     /**
@@ -238,27 +263,23 @@ public class DialogCellView extends ViewGroup {
      * @param text
      */
     public void setText(String text) {
-        mMessageTextView.setText(text);
-        mMessageTextView.setVisibility(VISIBLE);
+        textView.setText(text);
 
-        LayoutParams lp = (DialogCellView.LayoutParams) mAttachedImage.getLayoutParams();
-        lp.topMargin = 0;
+        LayoutParams lp = (DialogCellView.LayoutParams) image.getLayoutParams();
+
+        if (!TextUtils.isEmpty(text)) {
+            textView.setVisibility(VISIBLE);
+            lp.topMargin = 0;
+        }
+        else {
+            textView.setVisibility(GONE);
+            lp.topMargin = dp(16);
+        }
+
+        image.setLayoutParams(lp);
     }
 
-    /**
-     * Shows image
-     */
-    public void hasImage() {
-        mAttachedImage.setVisibility(View.VISIBLE);
-    }
-
-    /**
-     * Returns reference to the attached image view
-     * @return ImageView
-     */
-    public ImageView getAttachedImageView() {
-        return mAttachedImage;
-    }
+    // ==========
 
     @Override
     public ViewGroup.LayoutParams generateLayoutParams(AttributeSet attrs) {
@@ -297,6 +318,8 @@ public class DialogCellView extends ViewGroup {
             super(source);
         }
     }
+
+    // ========
 
     /**
      * Helper method that useful in edit mode
