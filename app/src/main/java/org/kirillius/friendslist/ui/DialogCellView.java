@@ -97,7 +97,7 @@ public class DialogCellView extends ViewGroup {
         addView(image);
 
         lp = (DialogCellView.LayoutParams) image.getLayoutParams();
-        lp.width = LayoutParams.MATCH_PARENT;
+        lp.width = dp(100);
         lp.height = dp(100);
 
         //lp.rightMargin = dp(56);

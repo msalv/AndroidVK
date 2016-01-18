@@ -105,7 +105,7 @@ public class MessagesAdapter extends RecyclerView.Adapter {
             if ( msg.attachments.size() > 0 ) {
                 for (VKAttachments.VKApiAttachment attachment : msg.attachments) {
                     if ( attachment instanceof VKApiPhoto) {
-                        photo_url = ((VKApiPhoto)attachment).photo_604; // fixme: use appropriate picture
+                        photo_url = ((VKApiPhoto)attachment).photo_130; // fixme: use appropriate picture
                         break;
                     }
                 }
