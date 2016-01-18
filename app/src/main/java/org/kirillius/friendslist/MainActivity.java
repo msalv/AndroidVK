@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements LoginErrorFragmen
      */
     private void login() {
         if (!VKSdk.isLoggedIn()) {
-            VKSdk.login(this, "friends,offline");
+            VKSdk.login(this, "friends,messages,offline");
         }
         else {
             showFriends();
