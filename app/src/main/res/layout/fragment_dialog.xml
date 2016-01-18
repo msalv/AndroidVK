@@ -4,6 +4,16 @@
     android:layout_height="match_parent"
     tools:context="org.kirillius.friendslist.fragments.DialogFragment">
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/messages_list"
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="8dp"
+        android:layout_marginBottom="48dp"
+        android:clipToPadding="false"
+        android:scrollbarStyle="outsideOverlay" />
+
     <org.kirillius.friendslist.ui.ReplyTextView
         android:id="@+id/input_field"
         android:layout_width="match_parent"
