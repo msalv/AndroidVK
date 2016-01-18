@@ -115,6 +115,7 @@ public class MessagesAdapter extends RecyclerView.Adapter {
                 view.image.setVisibility(View.VISIBLE);
 
                 this.mImageLoader.load(photo_url)
+                        .placeholder(R.drawable.ic_image)
                         .fit().centerCrop()
                         .into(view.image);
             }

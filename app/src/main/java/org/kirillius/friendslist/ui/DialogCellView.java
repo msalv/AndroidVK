@@ -90,7 +90,6 @@ public class DialogCellView extends ViewGroup {
         image = new ImageView(context);
 
         image.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-        image.setImageResource(R.drawable.ic_image);
         image.setBackgroundColor(0xffdfe6ee);
         image.setVisibility(View.GONE);
 
