@@ -143,8 +143,7 @@ public class DialogFragment extends Fragment {
         mInputField.setOnSendClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, mInputField.getText()); // todo: send message
-                mInputField.clearInput();
+                sendMessage(mInputField.getText());
             }
         });
 
@@ -229,6 +228,47 @@ public class DialogFragment extends Fragment {
         mCurrentRequest = null;
         mAdapter.setTotalCount(total);
         mAdapter.addItems(items);
+    }
+
+    /**
+     * Sends message
+     * @param text
+     */
+    private void sendMessage(final String text) {
+        mCurrentRequest = new VKRequest("messages.send", VKParameters.from(
+                "user_id", mFriend.id,
+                "message", text
+        ));
+
+        mInputField.clearInput();
+        prependMessage(text);
+
+        mCurrentRequest.executeWithListener(new VKRequest.VKRequestListener() {
+            @Override
+            public void onComplete(VKResponse response) {
+                mCurrentRequest = null;
+                //todo: mark message as sent
+            }
+
+            @Override
+            public void onError(VKError error) {
+                showError(error);
+            }
+        });
+    }
+
+    /**
+     * Prepends outgoing message to the list
+     * @param text Body of the message
+     */
+    private void prependMessage(String text) {
+        VKApiMessage msg = new VKApiMessage();
+
+        msg.body = text;
+        msg.out = true;
+
+        mAdapter.prependItem(msg);
+        mLayoutManager.scrollToPosition(0);
     }
 
     /**
