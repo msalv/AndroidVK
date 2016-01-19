@@ -201,9 +201,14 @@ public class DialogFragment extends Fragment {
                 "count", MESSAGES_COUNT
         ), VKApiGetMessagesResponse.class);
 
+        mAdapter.setIsLoading(true);
+
         mCurrentRequest.executeWithListener(new VKRequest.VKRequestListener() {
             @Override
             public void onComplete(VKResponse response) {
+
+                mAdapter.setIsLoading(false);
+
                 if (response.parsedModel instanceof VKApiGetMessagesResponse) {
                     VKApiGetMessagesResponse msgs = (VKApiGetMessagesResponse) response.parsedModel;
                     appendToMessagesList(msgs.items, msgs.count);
@@ -214,6 +219,7 @@ public class DialogFragment extends Fragment {
 
             @Override
             public void onError(VKError error) {
+                mAdapter.setIsLoading(false);
                 showError(error);
             }
         });
