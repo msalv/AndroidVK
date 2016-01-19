@@ -9,10 +9,8 @@ import android.view.ViewGroup;
 import com.squareup.picasso.Picasso;
 import com.vk.sdk.api.model.VKApiMessage;
 import com.vk.sdk.api.model.VKApiPhoto;
-import com.vk.sdk.api.model.VKApiPhotoSize;
 import com.vk.sdk.api.model.VKAttachments;
 import com.vk.sdk.api.model.VKList;
-import com.vk.sdk.api.model.VKPhotoSizes;
 
 import org.kirillius.friendslist.R;
 import org.kirillius.friendslist.core.AndroidUtilities;
@@ -28,7 +26,11 @@ public class MessagesAdapter extends RecyclerView.Adapter {
     private VKList<VKApiMessage> mItems = new VKList<>();
     private Picasso mImageLoader;
     private boolean mIsLoading = false;
-    private StringBuilder mStringBuilder;
+    private int totalCount = 0;
+
+    public void setTotalCount(int totalCount) {
+        this.totalCount = totalCount;
+    }
 
     public interface OnItemClickListener {
         void onItemClick(View itemView, int position);
@@ -41,7 +43,6 @@ public class MessagesAdapter extends RecyclerView.Adapter {
     }
 
     public MessagesAdapter() {
-        mStringBuilder = new StringBuilder();
     }
 
     /**
@@ -160,7 +161,7 @@ public class MessagesAdapter extends RecyclerView.Adapter {
      * @return count
      */
     public int getTotalCount() {
-        return mItems.getCount();
+        return totalCount != 0 ? totalCount : mItems.getCount();
     }
 
     public void setIsLoading(boolean loading) {
