@@ -63,6 +63,15 @@ public class MessagesAdapter extends RecyclerView.Adapter {
         notifyItemRangeInserted(position, items.size());
     }
 
+    /**
+     * Adds a message to the begging of the list
+     * @param msg
+     */
+    public void prependItem(VKApiMessage msg) {
+        mItems.add(0, msg);
+        notifyItemInserted(0);
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view;
