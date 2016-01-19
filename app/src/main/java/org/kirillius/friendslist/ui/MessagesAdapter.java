@@ -1,33 +1,32 @@
 package org.kirillius.friendslist.ui;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.vk.sdk.api.model.VKApiUserFull;
+import com.vk.sdk.api.model.VKApiMessage;
+import com.vk.sdk.api.model.VKApiPhoto;
+import com.vk.sdk.api.model.VKAttachments;
 import com.vk.sdk.api.model.VKList;
 
 import org.kirillius.friendslist.R;
 import org.kirillius.friendslist.core.AndroidUtilities;
-import org.kirillius.friendslist.core.AppLoader;
 
 /**
  * Created by Kirill on 09.12.2015.
  */
-public class FriendsAdapter extends RecyclerView.Adapter {
+public class MessagesAdapter extends RecyclerView.Adapter {
 
     public static final int ITEM_VIEW_TYPE = 1;
     public static final int PROGRESS_VIEW_TYPE = 2;
 
-    private VKList<VKApiUserFull> mItems = new VKList<>();
+    private VKList<VKApiMessage> mItems = new VKList<>();
     private Picasso mImageLoader;
     private boolean mIsLoading = false;
-    private StringBuilder mStringBuilder;
+    private int totalCount = 0;
 
     public interface OnItemClickListener {
         void onItemClick(View itemView, int position);
@@ -39,15 +38,14 @@ public class FriendsAdapter extends RecyclerView.Adapter {
         clickListener = listener;
     }
 
-    public FriendsAdapter() {
-        mStringBuilder = new StringBuilder();
+    public MessagesAdapter() {
     }
 
     /**
      * Sets new collection of items
      * @param items
      */
-    public void setItems(VKList<VKApiUserFull> items) {
+    public void setItems(VKList<VKApiMessage> items) {
         if (items == null) {
             throw new NullPointerException("items == null");
         }
@@ -59,10 +57,19 @@ public class FriendsAdapter extends RecyclerView.Adapter {
      * Adds new items to the collection
      * @param items
      */
-    public void addItems(VKList<VKApiUserFull> items) {
+    public void addItems(VKList<VKApiMessage> items) {
         int position = mItems.size();
         mItems.addAll(items);
         notifyItemRangeInserted(position, items.size());
+    }
+
+    /**
+     * Adds a message to the begging of the list
+     * @param msg
+     */
+    public void prependItem(VKApiMessage msg) {
+        mItems.add(0, msg);
+        notifyItemInserted(0);
     }
 
     @Override
@@ -72,7 +79,7 @@ public class FriendsAdapter extends RecyclerView.Adapter {
 
         switch (viewType) {
             case ITEM_VIEW_TYPE:
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.friends_item, parent, false);
+                view = new DialogCellView(parent.getContext());
                 holder = new ItemHolder(view);
                 break;
 
@@ -88,24 +95,38 @@ public class FriendsAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder vh, int position) {
         if (vh instanceof ItemHolder) {
-            ItemHolder holder = (ItemHolder) vh;
 
-            VKApiUserFull friend = mItems.get(position);
+            DialogCellView view = (DialogCellView) vh.itemView;
+            VKApiMessage msg = mItems.get(position);
 
-            int size = AndroidUtilities.dp(48);
-            String photo = friend.photo.getImageForDimension(size, size);
-            this.mImageLoader.load(photo)
-                    .placeholder(R.drawable.ic_person)
-                    .fit().centerCrop()
-                    .into(holder.photoView);
+            view.setGravity(msg.out ? Gravity.RIGHT : Gravity.LEFT);
 
-            //holder.nameView.setText(friend.toString());
-            mStringBuilder.setLength(0);
-            mStringBuilder.append(friend.first_name).append(' ').append(friend.last_name);
-            holder.nameView.setText(mStringBuilder);
+            view.setText(msg.body);
 
-            Context context = AppLoader.getAppContext();
-            holder.onlineView.setText(friend.online ? context.getString(R.string.online) : context.getString(R.string.offline));
+            String photo_url = null;
+
+            if ( msg.attachments.size() > 0 ) {
+                for (VKAttachments.VKApiAttachment attachment : msg.attachments) {
+                    if ( attachment instanceof VKApiPhoto) {
+                        VKApiPhoto photo = (VKApiPhoto)attachment;
+                        //todo: view.setImageSize(photo.width, photo.height);
+
+                        photo_url = photo.src.getImageForDimension(AndroidUtilities.dp(100), AndroidUtilities.dp(100));
+                        break;
+                    }
+                }
+            }
+
+            if ( photo_url != null ) {
+                view.getImageView().setVisibility(View.VISIBLE);
+
+                this.mImageLoader.load(photo_url)
+                        .placeholder(R.drawable.ic_image)
+                        .into(view.getImageView());
+            }
+            else {
+                view.getImageView().setVisibility(View.GONE);
+            }
         }
     }
 
@@ -123,9 +144,9 @@ public class FriendsAdapter extends RecyclerView.Adapter {
     /**
      * Returns object at specified position
      * @param position index
-     * @return VKApiUserFull object
+     * @return VKApiMessage object
      */
-    public VKApiUserFull getItem(int position) {
+    public VKApiMessage getItem(int position) {
         if ( position >= 0 && position < mItems.size() ) {
             return mItems.get(position);
         }
@@ -145,7 +166,15 @@ public class FriendsAdapter extends RecyclerView.Adapter {
      * @return count
      */
     public int getTotalCount() {
-        return mItems.getCount();
+        return totalCount != 0 ? totalCount : mItems.getCount();
+    }
+
+    /**
+     * Sets total number of messages
+     * @param totalCount
+     */
+    public void setTotalCount(int totalCount) {
+        this.totalCount = totalCount;
     }
 
     public void setIsLoading(boolean loading) {
@@ -166,16 +195,9 @@ public class FriendsAdapter extends RecyclerView.Adapter {
     }
 
     public static class ItemHolder extends Holder {
-        public ImageView photoView;
-        public TextView nameView;
-        public TextView onlineView;
 
         public ItemHolder(final View itemView) {
             super(itemView);
-
-            photoView = (ImageView) itemView.findViewById(R.id.photo);
-            nameView = (TextView) itemView.findViewById(R.id.name);
-            onlineView = (TextView) itemView.findViewById(R.id.online);
 
             if (clickListener != null) {
                 itemView.setOnClickListener(new View.OnClickListener() {
