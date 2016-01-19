@@ -119,8 +119,7 @@ public class DialogFragment extends Fragment {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                /*if (dy > 0) {
-
+                if ( dy < 0 ) {
                     if (mAdapter.getItemCount() >= mAdapter.getTotalCount()) {
                         return;
                     }
@@ -133,11 +132,10 @@ public class DialogFragment extends Fragment {
                     if (scrolled >= border) {
 
                         if (mCurrentRequest == null) {
-                            fetchMoreFriends();
+                            fetchMoreMessages();
                         }
-
                     }
-                }*/
+                }
             }
         });
 
@@ -169,7 +167,8 @@ public class DialogFragment extends Fragment {
             @Override
             public void onComplete(VKResponse response) {
                 if (response.parsedModel instanceof VKApiGetMessagesResponse) {
-                    updateMessagesList(((VKApiGetMessagesResponse) response.parsedModel).items);
+                    VKApiGetMessagesResponse msgs = (VKApiGetMessagesResponse) response.parsedModel;
+                    updateMessagesList(msgs.items, msgs.count);
                 } else {
                     showError(null);
                 }
@@ -182,9 +181,54 @@ public class DialogFragment extends Fragment {
         });
     }
 
-    private void updateMessagesList(VKList<VKApiMessage> items) {
+    /**
+     * Updates messages list with new items
+     * @param items List of messages
+     * @param total Total count of messages
+     */
+    private void updateMessagesList(VKList<VKApiMessage> items, int total) {
         mCurrentRequest = null;
+        mAdapter.setTotalCount(total);
         mAdapter.setItems(items);
+    }
+
+    /**
+     * Fetches more messages from the current dialog
+     */
+    private void fetchMoreMessages() {
+        mCurrentRequest = new VKRequest("messages.getHistory", VKParameters.from(
+                "peer_id", mFriend.id,
+                "offset", mAdapter.getItemCount(),
+                "count", MESSAGES_COUNT
+        ), VKApiGetMessagesResponse.class);
+
+        mCurrentRequest.executeWithListener(new VKRequest.VKRequestListener() {
+            @Override
+            public void onComplete(VKResponse response) {
+                if (response.parsedModel instanceof VKApiGetMessagesResponse) {
+                    VKApiGetMessagesResponse msgs = (VKApiGetMessagesResponse) response.parsedModel;
+                    appendToMessagesList(msgs.items, msgs.count);
+                } else {
+                    showError(null);
+                }
+            }
+
+            @Override
+            public void onError(VKError error) {
+                showError(error);
+            }
+        });
+    }
+
+    /**
+     * Appends messages to the list
+     * @param items List of messages
+     * @param total Total count of messages
+     */
+    private void appendToMessagesList(VKList<VKApiMessage> items, int total) {
+        mCurrentRequest = null;
+        mAdapter.setTotalCount(total);
+        mAdapter.addItems(items);
     }
 
     /**
