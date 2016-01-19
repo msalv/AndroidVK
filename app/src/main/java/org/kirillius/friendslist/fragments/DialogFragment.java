@@ -250,13 +250,12 @@ public class DialogFragment extends Fragment {
         ));
 
         mInputField.clearInput();
-        prependMessage(text);
 
         mCurrentRequest.executeWithListener(new VKRequest.VKRequestListener() {
             @Override
             public void onComplete(VKResponse response) {
                 mCurrentRequest = null;
-                //todo: mark message as sent
+                prependMessage(text);
             }
 
             @Override
