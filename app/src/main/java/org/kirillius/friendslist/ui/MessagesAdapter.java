@@ -1,7 +1,7 @@
 package org.kirillius.friendslist.ui;
 
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,10 +9,13 @@ import android.view.ViewGroup;
 import com.squareup.picasso.Picasso;
 import com.vk.sdk.api.model.VKApiMessage;
 import com.vk.sdk.api.model.VKApiPhoto;
+import com.vk.sdk.api.model.VKApiPhotoSize;
 import com.vk.sdk.api.model.VKAttachments;
 import com.vk.sdk.api.model.VKList;
+import com.vk.sdk.api.model.VKPhotoSizes;
 
 import org.kirillius.friendslist.R;
+import org.kirillius.friendslist.core.AndroidUtilities;
 
 /**
  * Created by Kirill on 09.12.2015.
@@ -90,13 +93,7 @@ public class MessagesAdapter extends RecyclerView.Adapter {
             DialogCellView view = (DialogCellView) vh.itemView;
             VKApiMessage msg = mItems.get(position);
 
-            if (msg.out) {
-                view.stickToRight();
-            }
-            else {
-                view.stickToLeft();
-            }
-
+            view.setGravity(msg.out ? Gravity.RIGHT : Gravity.LEFT);
 
             view.setText(msg.body);
 
@@ -105,22 +102,21 @@ public class MessagesAdapter extends RecyclerView.Adapter {
             if ( msg.attachments.size() > 0 ) {
                 for (VKAttachments.VKApiAttachment attachment : msg.attachments) {
                     if ( attachment instanceof VKApiPhoto) {
-                        photo_url = ((VKApiPhoto)attachment).photo_130; // fixme: use appropriate picture
+                        photo_url = ((VKApiPhoto)attachment).src.getImageForDimension(AndroidUtilities.dp(100), AndroidUtilities.dp(100));
                         break;
                     }
                 }
             }
 
             if ( photo_url != null ) {
-                view.image.setVisibility(View.VISIBLE);
+                view.getImageView().setVisibility(View.VISIBLE);
 
                 this.mImageLoader.load(photo_url)
                         .placeholder(R.drawable.ic_image)
-                        .fit().centerCrop()
-                        .into(view.image);
+                        .into(view.getImageView());
             }
             else {
-                view.image.setVisibility(View.GONE);
+                view.getImageView().setVisibility(View.GONE);
             }
         }
     }
