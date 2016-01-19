@@ -166,8 +166,8 @@ public class DialogFragment extends Fragment {
             @Override
             public void onComplete(VKResponse response) {
                 if (response.parsedModel instanceof VKApiGetMessagesResponse) {
-                    VKApiGetMessagesResponse msgs = (VKApiGetMessagesResponse) response.parsedModel;
-                    updateMessagesList(msgs.items, msgs.count);
+                    VKApiGetMessagesResponse data = (VKApiGetMessagesResponse) response.parsedModel;
+                    updateMessagesList(data.items, data.count);
                 } else {
                     showError(null);
                 }
@@ -210,8 +210,8 @@ public class DialogFragment extends Fragment {
                 mAdapter.setIsLoading(false);
 
                 if (response.parsedModel instanceof VKApiGetMessagesResponse) {
-                    VKApiGetMessagesResponse msgs = (VKApiGetMessagesResponse) response.parsedModel;
-                    appendToMessagesList(msgs.items, msgs.count);
+                    VKApiGetMessagesResponse data = (VKApiGetMessagesResponse) response.parsedModel;
+                    appendToMessagesList(data.items, data.count);
                 } else {
                     showError(null);
                 }
