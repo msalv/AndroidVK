@@ -102,7 +102,10 @@ public class MessagesAdapter extends RecyclerView.Adapter {
             if ( msg.attachments.size() > 0 ) {
                 for (VKAttachments.VKApiAttachment attachment : msg.attachments) {
                     if ( attachment instanceof VKApiPhoto) {
-                        photo_url = ((VKApiPhoto)attachment).src.getImageForDimension(AndroidUtilities.dp(100), AndroidUtilities.dp(100));
+                        VKApiPhoto photo = (VKApiPhoto)attachment;
+                        //todo: view.setImageSize(photo.width, photo.height);
+
+                        photo_url = photo.src.getImageForDimension(AndroidUtilities.dp(100), AndroidUtilities.dp(100));
                         break;
                     }
                 }
