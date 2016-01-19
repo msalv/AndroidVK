@@ -143,7 +143,10 @@ public class DialogFragment extends Fragment {
         mInputField.setOnSendClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendMessage(mInputField.getText());
+                String text = mInputField.getText().trim();
+                if ( text.length() > 0 ) {
+                    sendMessage(text);
+                }
             }
         });
 
