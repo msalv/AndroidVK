@@ -78,7 +78,9 @@ public class DialogFragment extends Fragment {
 
         ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
 
-        actionBar.setTitle(mFriend.toString()); //fixme: use string builder
+        StringBuilder sb = new StringBuilder();
+        sb.append(mFriend.first_name).append(' ').append(mFriend.last_name);
+        actionBar.setTitle(sb);
 
         if ( mFriend.online ) {
             actionBar.setSubtitle(R.string.online);
