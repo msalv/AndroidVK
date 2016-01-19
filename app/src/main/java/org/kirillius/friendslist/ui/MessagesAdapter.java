@@ -28,10 +28,6 @@ public class MessagesAdapter extends RecyclerView.Adapter {
     private boolean mIsLoading = false;
     private int totalCount = 0;
 
-    public void setTotalCount(int totalCount) {
-        this.totalCount = totalCount;
-    }
-
     public interface OnItemClickListener {
         void onItemClick(View itemView, int position);
     }
@@ -162,6 +158,14 @@ public class MessagesAdapter extends RecyclerView.Adapter {
      */
     public int getTotalCount() {
         return totalCount != 0 ? totalCount : mItems.getCount();
+    }
+
+    /**
+     * Sets total number of messages
+     * @param totalCount
+     */
+    public void setTotalCount(int totalCount) {
+        this.totalCount = totalCount;
     }
 
     public void setIsLoading(boolean loading) {
