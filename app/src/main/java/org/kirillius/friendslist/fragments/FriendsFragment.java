@@ -1,7 +1,10 @@
 package org.kirillius.friendslist.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -21,13 +24,14 @@ import com.vk.sdk.api.model.VKList;
 
 import org.kirillius.friendslist.R;
 import org.kirillius.friendslist.core.AppLoader;
+import org.kirillius.friendslist.core.OnNavigationListener;
 import org.kirillius.friendslist.ui.FriendsAdapter;
 
 public class FriendsFragment extends Fragment {
 
     public static final String TAG = "FriendsFragment";
     private static final int FRIENDS_COUNT = 1000;
-    private static final String REQUEST_FIELDS = "online,photo_50,photo_100,photo_200,photo_400";
+    private static final String REQUEST_FIELDS = "online,last_seen,photo_50,photo_100,photo_200,photo_400";
 
     private LinearLayoutManager mLayoutManager;
     private RecyclerView mFriendsListView;
@@ -36,6 +40,7 @@ public class FriendsFragment extends Fragment {
     private VKRequest mCurrentRequest;
     private Toast mCurrentToast;
     private Picasso mPicasso;
+    private OnNavigationListener mOnNavigationListener;
 
     public FriendsFragment() {
         // Required empty public constructor
@@ -63,6 +68,10 @@ public class FriendsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        actionBar.setTitle(R.string.app_name);
+        actionBar.setSubtitle(null);
+
         View rootView = inflater.inflate(R.layout.fragment_friends, container, false);
 
         mFriendsListView = (RecyclerView) rootView.findViewById(R.id.friends_list);
@@ -72,6 +81,20 @@ public class FriendsFragment extends Fragment {
 
         mAdapter = new FriendsAdapter();
         mAdapter.setImageLoader(mPicasso);
+
+        mAdapter.setOnItemClickListener(new FriendsAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View itemView, int position) {
+                VKApiUserFull user = mAdapter.getItem(position);
+
+                if ( user == null ) {
+                    return;
+                }
+
+                DialogFragment fragment = DialogFragment.newInstance(user);
+                mOnNavigationListener.OnNavigatedTo(fragment, DialogFragment.TAG);
+            }
+        });
 
         mLayoutManager = new LinearLayoutManager(getActivity());
 
@@ -205,6 +228,24 @@ public class FriendsFragment extends Fragment {
                 mCurrentToast.show();
             }
         }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if (context instanceof OnNavigationListener) {
+            mOnNavigationListener = (OnNavigationListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnNavigationListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mOnNavigationListener = null;
     }
 
     @Override
