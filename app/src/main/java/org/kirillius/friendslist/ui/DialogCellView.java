@@ -134,6 +134,37 @@ public class DialogCellView extends FrameLayout {
     }
 
     /**
+     * Sets images view's width and height to fit to the screen
+     * @param origWidth Original width
+     * @param origHeight Original height
+     * @return Data structure with calculated width and height
+     */
+    public Point setImageSize(int origWidth, int origHeight) {
+        if (origWidth == 0 || origHeight == 0) {
+            return null;
+        }
+
+        Point size = new Point();
+        int smallSide = Math.min(AndroidUtilities.displaySize.x, AndroidUtilities.displaySize.y);
+
+        int width = Math.min(smallSide, dp(320)) - dp(72); // 320 — smallest screen side, 72 — all margins/paddings
+        float scale = (float)width / (float)origWidth;
+        int height = (int)(origHeight * scale);
+
+        if ( height == 0 ) {
+            height = width + dp(100);
+        }
+
+        size.set(width, height);
+
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) imageView.getLayoutParams();
+        lp.width = width;
+        lp.height = height;
+
+        return size;
+    }
+
+    /**
      * Helper method that useful in edit mode
      * @param value amount of dip
      * @return value converted to pixels
