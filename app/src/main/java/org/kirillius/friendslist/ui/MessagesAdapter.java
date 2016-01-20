@@ -1,5 +1,6 @@
 package org.kirillius.friendslist.ui;
 
+import android.graphics.Point;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -103,31 +104,56 @@ public class MessagesAdapter extends RecyclerView.Adapter {
 
             view.setText(msg.body);
 
-            String photo_url = null;
+            boolean photo_attached = false;
 
             if ( msg.attachments.size() > 0 ) {
                 for (VKAttachments.VKApiAttachment attachment : msg.attachments) {
                     if ( attachment instanceof VKApiPhoto) {
-                        VKApiPhoto photo = (VKApiPhoto)attachment;
-                        //todo: view.setImageSize(photo.width, photo.height);
-
-                        photo_url = photo.src.getImageForDimension(AndroidUtilities.dp(100), AndroidUtilities.dp(100));
+                        this.attachPhoto(view, (VKApiPhoto)attachment);
+                        photo_attached = true;
                         break;
                     }
                 }
             }
 
-            if ( photo_url != null ) {
-                view.getImageView().setVisibility(View.VISIBLE);
-
-                this.mImageLoader.load(photo_url)
-                        .placeholder(R.drawable.ic_image)
-                        .into(view.getImageView());
-            }
-            else {
+            if (!photo_attached) {
                 view.getImageView().setVisibility(View.GONE);
             }
         }
+    }
+
+    /**
+     * Attaches photo to the message
+     * @param view DialogCellView
+     * @param photo
+     */
+    private void attachPhoto(DialogCellView view, VKApiPhoto photo) {
+        Point size = view.setImageSize(photo.width, photo.height);
+
+        int width = AndroidUtilities.dp(100);
+        int height = AndroidUtilities.dp(100);
+
+        if ( size != null ) {
+            width = size.x;
+            height = size.y;
+        }
+
+        String photo_url = null;
+
+        while ( width > 64 ) {
+            photo_url = photo.src.getImageForDimension(width, height);
+            if (photo_url != null) {
+                break;
+            }
+            width = (int) (width * 0.75);
+            height = (int) (height * 0.75);
+        }
+
+        view.getImageView().setVisibility(View.VISIBLE);
+
+        this.mImageLoader.load(photo_url)
+                .placeholder(R.drawable.ic_image)
+                .into(view.getImageView());
     }
 
     @Override
