@@ -99,7 +99,6 @@ public class FriendsAdapter extends RecyclerView.Adapter {
                     .fit().centerCrop()
                     .into(holder.photoView);
 
-            //holder.nameView.setText(friend.toString());
             mStringBuilder.setLength(0);
             mStringBuilder.append(friend.first_name).append(' ').append(friend.last_name);
             holder.nameView.setText(mStringBuilder);

@@ -1,6 +1,7 @@
 package org.kirillius.friendslist.ui;
 
 import android.content.Context;
+import android.graphics.Point;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.text.TextUtils;
@@ -22,7 +23,6 @@ public class DialogCellView extends FrameLayout {
     private static final int COLOR_TEXT = 0xff2e3033;
     private static final int COLOR_GRAY = 0xffe6e9f0;
     private static final int COLOR_BLUE = 0xffd8e5f5;
-    private static final int COLOR_LIGHT_BLUE = 0xffdfe6ee;
 
     private GradientDrawable mBackgroundDrawable;
     private InnerDialogCellView mBubbleContainer;
@@ -90,9 +90,6 @@ public class DialogCellView extends FrameLayout {
         lp.rightMargin = dp(8);
 
         imageView = new ImageView(context);
-
-        imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-        imageView.setBackgroundColor(COLOR_LIGHT_BLUE);
         imageView.setVisibility(View.GONE);
 
         mBubbleContainer.addView(imageView);
@@ -131,6 +128,37 @@ public class DialogCellView extends FrameLayout {
             textView.setVisibility(GONE);
             lp.topMargin = 0;
         }
+    }
+
+    /**
+     * Sets images view's width and height to fit to the screen
+     * @param origWidth Original width
+     * @param origHeight Original height
+     * @return Data structure with calculated width and height
+     */
+    public Point setImageSize(int origWidth, int origHeight) {
+        if (origWidth == 0 || origHeight == 0) {
+            return null;
+        }
+
+        Point size = new Point();
+        int smallSide = Math.min(AndroidUtilities.displaySize.x, AndroidUtilities.displaySize.y);
+
+        int width = Math.min(smallSide, dp(320)) - dp(72); // 320 — smallest screen side, 72 — all margins/paddings
+        float scale = (float)width / (float)origWidth;
+        int height = (int)(origHeight * scale);
+
+        if ( height == 0 ) {
+            height = width + dp(100);
+        }
+
+        size.set(width, height);
+
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) imageView.getLayoutParams();
+        lp.width = width;
+        lp.height = height;
+
+        return size;
     }
 
     /**
