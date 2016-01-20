@@ -1,6 +1,7 @@
 package org.kirillius.friendslist.ui;
 
 import android.content.Context;
+import android.graphics.Point;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.text.TextUtils;
@@ -22,7 +23,6 @@ public class DialogCellView extends FrameLayout {
     private static final int COLOR_TEXT = 0xff2e3033;
     private static final int COLOR_GRAY = 0xffe6e9f0;
     private static final int COLOR_BLUE = 0xffd8e5f5;
-    private static final int COLOR_LIGHT_BLUE = 0xffdfe6ee;
 
     private GradientDrawable mBackgroundDrawable;
     private InnerDialogCellView mBubbleContainer;
@@ -90,9 +90,6 @@ public class DialogCellView extends FrameLayout {
         lp.rightMargin = dp(8);
 
         imageView = new ImageView(context);
-
-        imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-        imageView.setBackgroundColor(COLOR_LIGHT_BLUE);
         imageView.setVisibility(View.GONE);
 
         mBubbleContainer.addView(imageView);
