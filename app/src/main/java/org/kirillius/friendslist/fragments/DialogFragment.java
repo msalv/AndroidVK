@@ -37,7 +37,6 @@ public class DialogFragment extends Fragment {
     private ReplyTextView mInputField;
 
     private LinearLayoutManager mLayoutManager;
-    private RecyclerView mMessagesListView;
     private MessagesAdapter mAdapter;
 
     private VKRequest mCurrentRequest;
@@ -103,7 +102,7 @@ public class DialogFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_dialog, container, false);
 
-        mMessagesListView = (RecyclerView) view.findViewById(R.id.messages_list);
+        RecyclerView messagesListView = (RecyclerView) view.findViewById(R.id.messages_list);
         mPicasso = new Picasso.Builder(getActivity()).build();
 
         mAdapter = new MessagesAdapter();
@@ -112,14 +111,14 @@ public class DialogFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getActivity());
         mLayoutManager.setReverseLayout(true);
 
-        mMessagesListView.setLayoutManager(mLayoutManager);
-        mMessagesListView.setAdapter(mAdapter);
+        messagesListView.setLayoutManager(mLayoutManager);
+        messagesListView.setAdapter(mAdapter);
 
-        mMessagesListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        messagesListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if ( dy < 0 ) {
+                if (dy < 0) {
                     if (mAdapter.getItemCount() >= mAdapter.getTotalCount()) {
                         return;
                     }
@@ -311,7 +310,6 @@ public class DialogFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-        mMessagesListView = null;
         mAdapter = null;
         mLayoutManager = null;
 
