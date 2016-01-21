@@ -1,6 +1,5 @@
 package org.kirillius.friendslist.ui;
 
-import android.graphics.Point;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -9,12 +8,9 @@ import android.view.ViewGroup;
 
 import com.squareup.picasso.Picasso;
 import com.vk.sdk.api.model.VKApiMessage;
-import com.vk.sdk.api.model.VKApiPhoto;
-import com.vk.sdk.api.model.VKAttachments;
 import com.vk.sdk.api.model.VKList;
 
 import org.kirillius.friendslist.R;
-import org.kirillius.friendslist.core.AndroidUtilities;
 
 /**
  * Created by Kirill on 09.12.2015.
