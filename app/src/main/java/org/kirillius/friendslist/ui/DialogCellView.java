@@ -13,6 +13,11 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+import com.vk.sdk.api.model.VKApiPhoto;
+import com.vk.sdk.api.model.VKAttachments;
+
+import org.kirillius.friendslist.R;
 import org.kirillius.friendslist.core.AndroidUtilities;
 
 /**
@@ -27,7 +32,9 @@ public class DialogCellView extends FrameLayout {
     private GradientDrawable mBackgroundDrawable;
     private InnerDialogCellView mBubbleContainer;
     private TextView textView;
-    private ImageView imageView;
+    public ImageView imageView;
+
+    private Picasso mImageLoader;
 
     public DialogCellView(Context context) {
         super(context);
@@ -44,8 +51,8 @@ public class DialogCellView extends FrameLayout {
         init(context);
     }
 
-    public ImageView getImageView() {
-        return imageView;
+    public void setImageLoader(Picasso imageLoader) {
+        this.mImageLoader = imageLoader;
     }
 
     private void init(Context context) {
@@ -132,33 +139,55 @@ public class DialogCellView extends FrameLayout {
 
     /**
      * Sets images view's width and height to fit to the screen
-     * @param origWidth Original width
-     * @param origHeight Original height
      * @return Data structure with calculated width and height
      */
-    public Point setImageSize(int origWidth, int origHeight) {
-        if (origWidth == 0 || origHeight == 0) {
-            return null;
+    public void setAttachments(VKAttachments attachments) {
+
+        for (VKAttachments.VKApiAttachment attachment : attachments) {
+            if ( attachment instanceof VKApiPhoto) {
+                this.attachPhoto((VKApiPhoto) attachment);
+                break; // support only one photo for now
+            }
         }
+    }
 
-        Point size = new Point();
-        int smallSide = Math.min(AndroidUtilities.displaySize.x, AndroidUtilities.displaySize.y);
+    /**
+     * Attaches photo to the message
+     * @param photo
+     */
+    private void attachPhoto(VKApiPhoto photo) {
 
-        int width = Math.min(smallSide, dp(320)) - dp(72); // 320 — smallest screen side, 72 — all margins/paddings
-        float scale = (float)width / (float)origWidth;
-        int height = (int)(origHeight * scale);
+        // 320 — required width, 72 — all margins/paddings
+        int width = Math.min(AndroidUtilities.displaySize.x, dp(320)) - dp(72);
+        float scale = photo.width != 0 ? (float)width / (float)photo.width : 1.0f;
+        int height = (int)(photo.height * scale);
 
         if ( height == 0 ) {
             height = width + dp(100);
         }
 
-        size.set(width, height);
-
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) imageView.getLayoutParams();
         lp.width = width;
         lp.height = height;
 
-        return size;
+        String photo_url = null;
+
+        while ( width > 64 ) {
+            photo_url = photo.src.getImageForDimension(width, height);
+            if (photo_url != null) {
+                break;
+            }
+            width = (int) (width * 0.75); // scale down to 75%
+            height = (int) (height * 0.75); // scale down to 75%
+        }
+
+        imageView.setVisibility(View.VISIBLE);
+
+        if ( this.mImageLoader != null ) {
+            this.mImageLoader.load(photo_url)
+                    .placeholder(R.drawable.ic_image)
+                    .into(imageView);
+        }
     }
 
     /**
