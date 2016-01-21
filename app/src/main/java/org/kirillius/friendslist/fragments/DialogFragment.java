@@ -100,9 +100,9 @@ public class DialogFragment extends Fragment {
 
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        View view = inflater.inflate(R.layout.fragment_dialog, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_dialog, container, false);
 
-        RecyclerView messagesListView = (RecyclerView) view.findViewById(R.id.messages_list);
+        RecyclerView messagesListView = (RecyclerView) rootView.findViewById(R.id.messages_list);
         mPicasso = new Picasso.Builder(getActivity()).build();
 
         mAdapter = new MessagesAdapter();
@@ -138,7 +138,7 @@ public class DialogFragment extends Fragment {
             }
         });
 
-        mInputField = (ReplyTextView) view.findViewById(R.id.input_field);
+        mInputField = (ReplyTextView) rootView.findViewById(R.id.input_field);
         mInputField.setOnSendClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -151,7 +151,7 @@ public class DialogFragment extends Fragment {
 
         fetchMessages();
 
-        return view;
+        return rootView;
     }
 
     /**
