@@ -1,14 +1,13 @@
 package org.kirillius.friendslist.ui;
 
 import android.content.Context;
-import android.graphics.Point;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,7 +16,6 @@ import com.squareup.picasso.Picasso;
 import com.vk.sdk.api.model.VKApiPhoto;
 import com.vk.sdk.api.model.VKAttachments;
 
-import org.kirillius.friendslist.R;
 import org.kirillius.friendslist.core.AndroidUtilities;
 
 /**
@@ -28,8 +26,11 @@ public class DialogCellView extends FrameLayout {
     private static final int COLOR_TEXT = 0xff2e3033;
     private static final int COLOR_GRAY = 0xffe6e9f0;
     private static final int COLOR_BLUE = 0xffd8e5f5;
+    private static final int COLOR_PLACEHOLDER = 0xfff1f1f1;
 
     private GradientDrawable mBackgroundDrawable;
+    private ColorDrawable mPlaceholder;
+
     private InnerDialogCellView mBubbleContainer;
     private TextView textView;
     public ImageView imageView;
@@ -65,6 +66,9 @@ public class DialogCellView extends FrameLayout {
         mBackgroundDrawable = new GradientDrawable();
         mBackgroundDrawable.setColor(COLOR_GRAY);  // incoming by default (bg color: gray)
         mBackgroundDrawable.setCornerRadius(dp(6));
+
+        mPlaceholder = new ColorDrawable();
+        mPlaceholder.setColor(COLOR_PLACEHOLDER);
 
         mBubbleContainer = new InnerDialogCellView(context);
 
@@ -185,7 +189,7 @@ public class DialogCellView extends FrameLayout {
 
         if ( this.mImageLoader != null ) {
             this.mImageLoader.load(photo_url)
-                    .placeholder(R.drawable.ic_image)
+                    .placeholder(mPlaceholder)
                     .into(imageView);
         }
     }
