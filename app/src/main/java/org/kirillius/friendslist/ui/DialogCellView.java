@@ -205,7 +205,7 @@ public class DialogCellView extends FrameLayout {
     /**
      * Some kind of vertical frame layout
      */
-    private class InnerDialogCellView extends FrameLayout {
+    private static class InnerDialogCellView extends FrameLayout {
         public InnerDialogCellView(Context context) {
             super(context);
         }
