@@ -306,6 +306,7 @@ public class DialogFragment extends Fragment {
         if (mCurrentRequest != null) {
             mCurrentRequest.cancel();
         }
+        mCurrentRequest = null;
     }
 
     @Override
