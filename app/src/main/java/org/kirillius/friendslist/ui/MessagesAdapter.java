@@ -1,6 +1,5 @@
 package org.kirillius.friendslist.ui;
 
-import android.graphics.Point;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -9,12 +8,9 @@ import android.view.ViewGroup;
 
 import com.squareup.picasso.Picasso;
 import com.vk.sdk.api.model.VKApiMessage;
-import com.vk.sdk.api.model.VKApiPhoto;
-import com.vk.sdk.api.model.VKAttachments;
 import com.vk.sdk.api.model.VKList;
 
 import org.kirillius.friendslist.R;
-import org.kirillius.friendslist.core.AndroidUtilities;
 
 /**
  * Created by Kirill on 09.12.2015.
@@ -81,6 +77,7 @@ public class MessagesAdapter extends RecyclerView.Adapter {
         switch (viewType) {
             case ITEM_VIEW_TYPE:
                 view = new DialogCellView(parent.getContext());
+                ((DialogCellView)view).setImageLoader(mImageLoader);
                 holder = new ItemHolder(view);
                 break;
 
@@ -98,62 +95,14 @@ public class MessagesAdapter extends RecyclerView.Adapter {
         if (vh instanceof ItemHolder) {
 
             DialogCellView view = (DialogCellView) vh.itemView;
+
             VKApiMessage msg = mItems.get(position);
 
             view.setGravity(msg.out ? Gravity.RIGHT : Gravity.LEFT);
-
             view.setText(msg.body);
 
-            boolean photo_attached = false;
-
-            if ( msg.attachments.size() > 0 ) {
-                for (VKAttachments.VKApiAttachment attachment : msg.attachments) {
-                    if ( attachment instanceof VKApiPhoto) {
-                        this.attachPhoto(view, (VKApiPhoto)attachment);
-                        photo_attached = true;
-                        break;
-                    }
-                }
-            }
-
-            if (!photo_attached) {
-                view.getImageView().setVisibility(View.GONE);
-            }
+            view.setAttachments(msg.attachments);
         }
-    }
-
-    /**
-     * Attaches photo to the message
-     * @param view DialogCellView
-     * @param photo
-     */
-    private void attachPhoto(DialogCellView view, VKApiPhoto photo) {
-        Point size = view.setImageSize(photo.width, photo.height);
-
-        int width = AndroidUtilities.dp(100);
-        int height = AndroidUtilities.dp(100);
-
-        if ( size != null ) {
-            width = size.x;
-            height = size.y;
-        }
-
-        String photo_url = null;
-
-        while ( width > 64 ) {
-            photo_url = photo.src.getImageForDimension(width, height);
-            if (photo_url != null) {
-                break;
-            }
-            width = (int) (width * 0.75);
-            height = (int) (height * 0.75);
-        }
-
-        view.getImageView().setVisibility(View.VISIBLE);
-
-        this.mImageLoader.load(photo_url)
-                .placeholder(R.drawable.ic_image)
-                .into(view.getImageView());
     }
 
     @Override

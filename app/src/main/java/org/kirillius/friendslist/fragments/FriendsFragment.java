@@ -34,7 +34,6 @@ public class FriendsFragment extends Fragment {
     private static final String REQUEST_FIELDS = "online,last_seen,photo_50,photo_100,photo_200,photo_400";
 
     private LinearLayoutManager mLayoutManager;
-    private RecyclerView mFriendsListView;
     private FriendsAdapter mAdapter;
 
     private VKRequest mCurrentRequest;
@@ -74,8 +73,8 @@ public class FriendsFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_friends, container, false);
 
-        mFriendsListView = (RecyclerView) rootView.findViewById(R.id.friends_list);
-        mFriendsListView.setHasFixedSize(true);
+        RecyclerView friendsListView = (RecyclerView) rootView.findViewById(R.id.friends_list);
+        friendsListView.setHasFixedSize(true);
 
         mPicasso = new Picasso.Builder(getActivity()).build();
 
@@ -98,10 +97,10 @@ public class FriendsFragment extends Fragment {
 
         mLayoutManager = new LinearLayoutManager(getActivity());
 
-        mFriendsListView.setLayoutManager(mLayoutManager);
-        mFriendsListView.setAdapter(mAdapter);
+        friendsListView.setLayoutManager(mLayoutManager);
+        friendsListView.setAdapter(mAdapter);
 
-        mFriendsListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        friendsListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -255,11 +254,11 @@ public class FriendsFragment extends Fragment {
         if (mCurrentRequest != null) {
             mCurrentRequest.cancel();
         }
+        mCurrentRequest = null;
     }
 
     @Override
     public void onDestroyView() {
-        mFriendsListView = null;
         mAdapter = null;
         mLayoutManager = null;
 
