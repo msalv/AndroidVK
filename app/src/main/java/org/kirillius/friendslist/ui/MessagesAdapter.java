@@ -101,11 +101,7 @@ public class MessagesAdapter extends RecyclerView.Adapter {
             view.setGravity(msg.out ? Gravity.RIGHT : Gravity.LEFT);
             view.setText(msg.body);
 
-            view.imageView.setVisibility(View.GONE);
-
-            if ( msg.attachments.size() > 0 ) {
-                view.setAttachments(msg.attachments);
-            }
+            view.setAttachments(msg.attachments);
         }
     }
 

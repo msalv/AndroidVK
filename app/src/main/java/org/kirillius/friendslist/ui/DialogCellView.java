@@ -33,7 +33,7 @@ public class DialogCellView extends FrameLayout {
 
     private InnerDialogCellView mBubbleContainer;
     private TextView textView;
-    public ImageView imageView;
+    private ImageView imageView;
 
     private Picasso mImageLoader;
 
@@ -146,6 +146,12 @@ public class DialogCellView extends FrameLayout {
      * @return Data structure with calculated width and height
      */
     public void setAttachments(VKAttachments attachments) {
+
+        imageView.setVisibility(View.GONE);
+
+        if ( attachments.isEmpty() ) {
+            return;
+        }
 
         for (VKAttachments.VKApiAttachment attachment : attachments) {
             if ( attachment instanceof VKApiPhoto) {
