@@ -1,17 +1,20 @@
 package org.kirillius.friendslist.ui;
 
 import android.content.Context;
-import android.graphics.Point;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
+import com.vk.sdk.api.model.VKApiPhoto;
+import com.vk.sdk.api.model.VKAttachments;
 
 import org.kirillius.friendslist.core.AndroidUtilities;
 
@@ -23,11 +26,16 @@ public class DialogCellView extends FrameLayout {
     private static final int COLOR_TEXT = 0xff2e3033;
     private static final int COLOR_GRAY = 0xffe6e9f0;
     private static final int COLOR_BLUE = 0xffd8e5f5;
+    private static final int COLOR_PLACEHOLDER = 0xfff1f1f1;
 
     private GradientDrawable mBackgroundDrawable;
+    private ColorDrawable mPlaceholder;
+
     private InnerDialogCellView mBubbleContainer;
     private TextView textView;
     private ImageView imageView;
+
+    private Picasso mImageLoader;
 
     public DialogCellView(Context context) {
         super(context);
@@ -44,8 +52,8 @@ public class DialogCellView extends FrameLayout {
         init(context);
     }
 
-    public ImageView getImageView() {
-        return imageView;
+    public void setImageLoader(Picasso imageLoader) {
+        this.mImageLoader = imageLoader;
     }
 
     private void init(Context context) {
@@ -58,6 +66,9 @@ public class DialogCellView extends FrameLayout {
         mBackgroundDrawable = new GradientDrawable();
         mBackgroundDrawable.setColor(COLOR_GRAY);  // incoming by default (bg color: gray)
         mBackgroundDrawable.setCornerRadius(dp(6));
+
+        mPlaceholder = new ColorDrawable();
+        mPlaceholder.setColor(COLOR_PLACEHOLDER);
 
         mBubbleContainer = new InnerDialogCellView(context);
 
@@ -132,33 +143,61 @@ public class DialogCellView extends FrameLayout {
 
     /**
      * Sets images view's width and height to fit to the screen
-     * @param origWidth Original width
-     * @param origHeight Original height
      * @return Data structure with calculated width and height
      */
-    public Point setImageSize(int origWidth, int origHeight) {
-        if (origWidth == 0 || origHeight == 0) {
-            return null;
+    public void setAttachments(VKAttachments attachments) {
+
+        imageView.setVisibility(View.GONE);
+
+        if ( attachments.isEmpty() ) {
+            return;
         }
 
-        Point size = new Point();
-        int smallSide = Math.min(AndroidUtilities.displaySize.x, AndroidUtilities.displaySize.y);
+        for (VKAttachments.VKApiAttachment attachment : attachments) {
+            if ( attachment instanceof VKApiPhoto) {
+                this.attachPhoto((VKApiPhoto) attachment);
+                break; // support only one photo for now
+            }
+        }
+    }
 
-        int width = Math.min(smallSide, dp(320)) - dp(72); // 320 — smallest screen side, 72 — all margins/paddings
-        float scale = (float)width / (float)origWidth;
-        int height = (int)(origHeight * scale);
+    /**
+     * Attaches photo to the message
+     * @param photo
+     */
+    private void attachPhoto(VKApiPhoto photo) {
+
+        // 320 — required width, 72 — all margins/paddings
+        int width = Math.min(AndroidUtilities.displaySize.x, dp(320)) - dp(72);
+        float scale = photo.width != 0 ? (float)width / (float)photo.width : 1.0f;
+        int height = (int)(photo.height * scale);
 
         if ( height == 0 ) {
             height = width + dp(100);
         }
 
-        size.set(width, height);
-
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) imageView.getLayoutParams();
         lp.width = width;
         lp.height = height;
 
-        return size;
+        String photo_url = null;
+
+        while ( width > 64 ) {
+            photo_url = photo.src.getImageForDimension(width, height);
+            if (photo_url != null) {
+                break;
+            }
+            width = (int) (width * 0.75); // scale down to 75%
+            height = (int) (height * 0.75); // scale down to 75%
+        }
+
+        imageView.setVisibility(View.VISIBLE);
+
+        if ( this.mImageLoader != null ) {
+            this.mImageLoader.load(photo_url)
+                    .placeholder(mPlaceholder)
+                    .into(imageView);
+        }
     }
 
     /**
@@ -176,7 +215,7 @@ public class DialogCellView extends FrameLayout {
     /**
      * Some kind of vertical frame layout
      */
-    private class InnerDialogCellView extends FrameLayout {
+    private static class InnerDialogCellView extends FrameLayout {
         public InnerDialogCellView(Context context) {
             super(context);
         }
