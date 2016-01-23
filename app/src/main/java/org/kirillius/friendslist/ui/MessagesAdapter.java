@@ -82,7 +82,7 @@ public class MessagesAdapter extends RecyclerView.Adapter {
                 break;
 
             case PROGRESS_VIEW_TYPE:
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.friends_progress, parent, false);
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.progress_spinner, parent, false);
                 holder = new Holder(view);
                 break;
         }
