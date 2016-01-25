@@ -19,6 +19,7 @@ public abstract class EndlessScrollAdapter<E> extends RecyclerView.Adapter {
 
     public static final int ITEM_VIEW_TYPE = 1;
     public static final int PROGRESS_VIEW_TYPE = 2;
+    public static final int ERROR_VIEW_TYPE = 3;
 
     protected List<E> mItems = new ArrayList<>();
     protected boolean mIsLoading = false;
@@ -29,9 +30,13 @@ public abstract class EndlessScrollAdapter<E> extends RecyclerView.Adapter {
     }
 
     private static OnItemClickListener clickListener;
+    private static OnItemClickListener errorClickListener;
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         clickListener = listener;
+    }
+    public void setOnErrorClickListener(OnItemClickListener listener) {
+        errorClickListener = listener;
     }
 
     /**
@@ -75,6 +80,10 @@ public abstract class EndlessScrollAdapter<E> extends RecyclerView.Adapter {
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.progress_spinner, parent, false);
                 holder = new Holder(view);
                 break;
+
+            case ERROR_VIEW_TYPE:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_error_item, parent, false);
+                holder = new ErrorHolder(view);
         }
 
         return holder;
@@ -140,18 +149,38 @@ public abstract class EndlessScrollAdapter<E> extends RecyclerView.Adapter {
     }
 
     /**
+     * Holder for an error view
+     */
+    public static class ErrorHolder extends Holder {
+        public ErrorHolder(View itemView) {
+            super(itemView);
+
+            View loadMoreBtn = itemView.findViewById(R.id.load_more);
+
+            if ( errorClickListener != null ) {
+                loadMoreBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        errorClickListener.onItemClick(v, getLayoutPosition());
+                    }
+                });
+            }
+        }
+    }
+
+    /**
      * View holder for an list item with click listener
      */
     public static class ItemHolder extends Holder {
 
-        public ItemHolder(final View itemView) {
+        public ItemHolder(View itemView) {
             super(itemView);
 
             if (clickListener != null) {
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        clickListener.onItemClick(itemView, getLayoutPosition());
+                        clickListener.onItemClick(v, getLayoutPosition());
                     }
                 });
             }
