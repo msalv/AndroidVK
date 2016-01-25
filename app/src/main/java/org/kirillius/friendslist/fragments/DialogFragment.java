@@ -25,7 +25,7 @@ import com.vk.sdk.api.model.VKList;
 
 import org.kirillius.friendslist.R;
 import org.kirillius.friendslist.core.AppLoader;
-import org.kirillius.friendslist.ui.MessagesAdapter;
+import org.kirillius.friendslist.ui.adapters.MessagesAdapter;
 import org.kirillius.friendslist.ui.ReplyTextView;
 
 public class DialogFragment extends Fragment {

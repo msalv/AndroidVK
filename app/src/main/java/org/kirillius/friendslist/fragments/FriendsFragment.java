@@ -25,7 +25,7 @@ import com.vk.sdk.api.model.VKList;
 import org.kirillius.friendslist.R;
 import org.kirillius.friendslist.core.AppLoader;
 import org.kirillius.friendslist.core.OnNavigationListener;
-import org.kirillius.friendslist.ui.FriendsAdapter;
+import org.kirillius.friendslist.ui.adapters.FriendsAdapter;
 
 public class FriendsFragment extends Fragment {
 
@@ -198,6 +198,7 @@ public class FriendsFragment extends Fragment {
     private void updateFriendsList(VKList<VKApiUserFull> items) {
         mCurrentRequest = null;
         mAdapter.setItems(items);
+        mAdapter.setTotalCount(items.getCount());
     }
 
     /**
@@ -207,6 +208,7 @@ public class FriendsFragment extends Fragment {
     private void appendToFriendsList(VKList<VKApiUserFull> items) {
         mCurrentRequest = null;
         mAdapter.addItems(items);
+        mAdapter.setTotalCount(items.getCount());
     }
 
     /**
