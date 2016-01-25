@@ -20,7 +20,7 @@ public abstract class EndlessScrollAdapter<E> extends RecyclerView.Adapter {
     public static final int ITEM_VIEW_TYPE = 1;
     public static final int PROGRESS_VIEW_TYPE = 2;
 
-    protected List mItems = new ArrayList<E>();
+    protected List<E> mItems = new ArrayList<>();
     protected boolean mIsLoading = false;
     protected int totalCount = NO_COUNT;
 
@@ -98,7 +98,7 @@ public abstract class EndlessScrollAdapter<E> extends RecyclerView.Adapter {
      */
     public E getItem(int position) {
         if ( position >= 0 && position < mItems.size() ) {
-            return (E)mItems.get(position);
+            return mItems.get(position);
         }
         return null;
     }
