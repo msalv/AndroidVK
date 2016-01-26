@@ -106,6 +106,10 @@ public class FriendsFragment extends Fragment {
                 super.onScrolled(recyclerView, dx, dy);
                 if (dy > 0) {
 
+                    if (mAdapter.isLoading() || mAdapter.hasError()) {
+                        return;
+                    }
+
                     if (mAdapter.getItemCount() >= mAdapter.getTotalCount()) {
                         return;
                     }
