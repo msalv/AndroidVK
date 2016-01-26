@@ -23,6 +23,8 @@ public abstract class EndlessScrollAdapter<E> extends RecyclerView.Adapter {
 
     protected List<E> mItems = new ArrayList<>();
     protected boolean mIsLoading = false;
+    protected boolean mHasError = false;
+
     protected int totalCount = NO_COUNT;
 
     public interface OnItemClickListener {
@@ -137,6 +139,14 @@ public abstract class EndlessScrollAdapter<E> extends RecyclerView.Adapter {
         else {
             notifyItemRemoved( mItems.size() );
         }
+    }
+
+    /**
+     * Returns whether we got a problem or not
+     * @return
+     */
+    public boolean hasError() {
+        return mHasError;
     }
 
     /**
