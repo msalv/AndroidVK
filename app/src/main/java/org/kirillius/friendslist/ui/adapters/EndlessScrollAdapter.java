@@ -86,6 +86,7 @@ public abstract class EndlessScrollAdapter<E> extends RecyclerView.Adapter {
             case ERROR_VIEW_TYPE:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_error_item, parent, false);
                 holder = new ErrorHolder(view);
+                break;
         }
 
         return holder;
