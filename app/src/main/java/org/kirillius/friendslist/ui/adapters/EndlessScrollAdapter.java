@@ -143,6 +143,14 @@ public abstract class EndlessScrollAdapter<E> extends RecyclerView.Adapter {
     }
 
     /**
+     * Returns current loading state
+     * @return boolean
+     */
+    public boolean isLoading() {
+        return mIsLoading;
+    }
+
+    /**
      * Returns whether we got a problem or not
      * @return
      */
