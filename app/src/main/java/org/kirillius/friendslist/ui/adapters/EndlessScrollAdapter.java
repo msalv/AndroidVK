@@ -95,7 +95,7 @@ public abstract class EndlessScrollAdapter<E> extends RecyclerView.Adapter {
     @Override
     public int getItemCount() {
         int size = mItems.size();
-        return !mIsLoading ? size : size + 1;
+        return !mIsLoading ? size : (size + 1);
     }
 
     @Override
