@@ -95,11 +95,14 @@ public abstract class EndlessScrollAdapter<E> extends RecyclerView.Adapter {
     @Override
     public int getItemCount() {
         int size = mItems.size();
-        return !mIsLoading ? size : (size + 1);
+        return !(mIsLoading || mHasError) ? size : (size + 1);
     }
 
     @Override
     public int getItemViewType(int position) {
+        if (mHasError && mItems.size() == position) {
+            return ERROR_VIEW_TYPE;
+        }
         return mIsLoading && mItems.size() == position ? PROGRESS_VIEW_TYPE : ITEM_VIEW_TYPE;
     }
 
@@ -143,6 +146,10 @@ public abstract class EndlessScrollAdapter<E> extends RecyclerView.Adapter {
         mIsLoading = loading;
 
         if (mIsLoading) {
+            if (mHasError) {
+                mHasError = false;
+                notifyItemRemoved( mItems.size() );
+            }
             notifyItemInserted( mItems.size() );
         }
         else {
@@ -164,6 +171,19 @@ public abstract class EndlessScrollAdapter<E> extends RecyclerView.Adapter {
      */
     public boolean hasError() {
         return mHasError;
+    }
+
+    /**
+     * Triggers adapter to show error view
+     */
+    public void onError() {
+        if (mHasError) {
+            return;
+        }
+
+        mHasError = true;
+
+        notifyItemInserted( mItems.size() );
     }
 
     /**

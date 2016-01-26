@@ -228,6 +228,7 @@ public class DialogFragment extends Fragment {
                     VKApiGetMessagesResponse data = (VKApiGetMessagesResponse) response.parsedModel;
                     appendToMessagesList(data.items, data.count);
                 } else {
+                    mAdapter.onError();
                     showError(null);
                 }
             }
@@ -235,6 +236,7 @@ public class DialogFragment extends Fragment {
             @Override
             public void onError(VKError error) {
                 mAdapter.setIsLoading(false);
+                mAdapter.onError();
                 showError(error);
             }
         });
