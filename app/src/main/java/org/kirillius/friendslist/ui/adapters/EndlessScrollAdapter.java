@@ -131,7 +131,15 @@ public abstract class EndlessScrollAdapter<E> extends RecyclerView.Adapter {
         this.totalCount = totalCount;
     }
 
+    /**
+     * Sets loading state
+     * @param loading
+     */
     public void setIsLoading(boolean loading) {
+        if (mIsLoading == loading) {
+            return;
+        }
+
         mIsLoading = loading;
 
         if (mIsLoading) {
