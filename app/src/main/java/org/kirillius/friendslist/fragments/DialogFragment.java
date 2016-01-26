@@ -120,7 +120,7 @@ public class DialogFragment extends Fragment {
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
 
-                if (mAdapter.hasError()) {
+                if (mAdapter.isLoading() || mAdapter.hasError()) {
                     return;
                 }
 
