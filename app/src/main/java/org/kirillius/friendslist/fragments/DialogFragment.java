@@ -25,6 +25,7 @@ import com.vk.sdk.api.model.VKList;
 
 import org.kirillius.friendslist.R;
 import org.kirillius.friendslist.core.AppLoader;
+import org.kirillius.friendslist.ui.adapters.EndlessScrollAdapter;
 import org.kirillius.friendslist.ui.adapters.MessagesAdapter;
 import org.kirillius.friendslist.ui.ReplyTextView;
 
@@ -118,6 +119,11 @@ public class DialogFragment extends Fragment {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
+
+                if (mAdapter.hasError()) {
+                    return;
+                }
+
                 if (dy < 0) {
                     if (mAdapter.getItemCount() >= mAdapter.getTotalCount()) {
                         return;
@@ -135,6 +141,13 @@ public class DialogFragment extends Fragment {
                         }
                     }
                 }
+            }
+        });
+
+        mAdapter.setOnErrorClickListener(new EndlessScrollAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View itemView, int position) {
+                fetchMoreMessages();
             }
         });
 
