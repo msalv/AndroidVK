@@ -32,7 +32,7 @@ public class DialogCellView extends FrameLayout {
     private GradientDrawable mBackgroundDrawable;
     private ColorDrawable mPlaceholder;
 
-    private InnerDialogCellView mBubbleContainer;
+    private LinearLayout mBubbleContainer;
     private TextView textView;
     private ImageView imageView;
 
@@ -71,7 +71,7 @@ public class DialogCellView extends FrameLayout {
         mPlaceholder = new ColorDrawable();
         mPlaceholder.setColor(COLOR_PLACEHOLDER);
 
-        mBubbleContainer = new InnerDialogCellView(context);
+        mBubbleContainer = new LinearLayout(context);
 
         mBubbleContainer.setPadding(dp(8), dp(8), dp(8), dp(8));
 
@@ -214,40 +214,5 @@ public class DialogCellView extends FrameLayout {
             return AndroidUtilities.dp(value);
         }
         return (int)Math.ceil(value * getResources().getDisplayMetrics().density);
-    }
-
-    /**
-     * Some kind of vertical frame layout
-     */
-    private static class InnerDialogCellView extends LinearLayout {
-        public InnerDialogCellView(Context context) {
-            super(context);
-        }
-
-        /*@Override
-        protected void onLayout(boolean changed, int l, int t, int r, int b) {
-            // For children all layout are starts from 0 and l,t,r,b may be ignored
-            int offsetLeft = getPaddingLeft();
-            int offsetTop = getPaddingTop();
-            //int offsetRight = getMeasuredWidth() - getPaddingRight();
-            int left, top, right, bottom;
-
-            int childCount = getChildCount();
-            for (int i = 0; i < childCount; i++) {
-                View v = getChildAt(i);
-                if (v.getVisibility() != View.GONE) {
-                    LayoutParams lp = (LayoutParams) v.getLayoutParams();
-
-                    left = offsetLeft + lp.leftMargin;
-                    top = offsetTop + lp.topMargin;
-                    right = left + v.getMeasuredWidth();//offsetRight - lp.rightMargin;
-                    bottom = top + v.getMeasuredHeight();
-
-                    v.layout(left, top, right, bottom);
-
-                    offsetTop = bottom + lp.bottomMargin;
-                }
-            }
-        }*/
     }
 }
