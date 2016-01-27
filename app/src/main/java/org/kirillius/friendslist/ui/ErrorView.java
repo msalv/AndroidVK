@@ -32,15 +32,12 @@ public class ErrorView extends FrameLayout {
     }
 
     private void init(Context context) {
-        FrameLayout.LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-        this.setLayoutParams(lp);
-
         mRetryButton = new Button(context);
         mRetryButton.setText(R.string.try_again);
 
         this.addView(mRetryButton);
 
-        lp = (FrameLayout.LayoutParams)mRetryButton.getLayoutParams();
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams)mRetryButton.getLayoutParams();
         lp.width = LayoutParams.WRAP_CONTENT;
         lp.height = LayoutParams.WRAP_CONTENT;
         lp.gravity = Gravity.CENTER;
