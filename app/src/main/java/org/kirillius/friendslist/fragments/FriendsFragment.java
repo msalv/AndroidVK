@@ -72,6 +72,7 @@ public class FriendsFragment extends Fragment {
         ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
         actionBar.setTitle(R.string.app_name);
         actionBar.setSubtitle(null);
+        actionBar.setDisplayHomeAsUpEnabled(false);
 
         View rootView = inflater.inflate(R.layout.fragment_friends, container, false);
 
