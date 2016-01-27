@@ -28,4 +28,10 @@
         android:layout_gravity="center"
         layout="@layout/progress_spinner" />
 
+    <org.kirillius.friendslist.ui.ErrorView
+        android:id="@+id/error_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
 </FrameLayout>
