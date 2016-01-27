@@ -25,8 +25,9 @@ import com.vk.sdk.api.model.VKList;
 
 import org.kirillius.friendslist.R;
 import org.kirillius.friendslist.core.AppLoader;
-import org.kirillius.friendslist.ui.MessagesAdapter;
-import org.kirillius.friendslist.ui.ReplyTextView;
+import org.kirillius.friendslist.ui.adapters.EndlessScrollAdapter;
+import org.kirillius.friendslist.ui.adapters.MessagesAdapter;
+import org.kirillius.friendslist.ui.ReplyEditText;
 
 public class DialogFragment extends Fragment {
     public static String TAG = "DialogFragment";
@@ -34,7 +35,7 @@ public class DialogFragment extends Fragment {
     private static final int MESSAGES_COUNT = 30;
 
     private VKApiUserFull mFriend;
-    private ReplyTextView mInputField;
+    private ReplyEditText mInputField;
 
     private LinearLayoutManager mLayoutManager;
     private MessagesAdapter mAdapter;
@@ -118,6 +119,11 @@ public class DialogFragment extends Fragment {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
+
+                if (mAdapter.isLoading() || mAdapter.hasError()) {
+                    return;
+                }
+
                 if (dy < 0) {
                     if (mAdapter.getItemCount() >= mAdapter.getTotalCount()) {
                         return;
@@ -138,7 +144,14 @@ public class DialogFragment extends Fragment {
             }
         });
 
-        mInputField = (ReplyTextView) rootView.findViewById(R.id.input_field);
+        mAdapter.setOnErrorClickListener(new EndlessScrollAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View itemView, int position) {
+                fetchMoreMessages();
+            }
+        });
+
+        mInputField = (ReplyEditText) rootView.findViewById(R.id.input_field);
         mInputField.setOnSendClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -215,6 +228,7 @@ public class DialogFragment extends Fragment {
                     VKApiGetMessagesResponse data = (VKApiGetMessagesResponse) response.parsedModel;
                     appendToMessagesList(data.items, data.count);
                 } else {
+                    mAdapter.onError();
                     showError(null);
                 }
             }
@@ -222,6 +236,7 @@ public class DialogFragment extends Fragment {
             @Override
             public void onError(VKError error) {
                 mAdapter.setIsLoading(false);
+                mAdapter.onError();
                 showError(error);
             }
         });

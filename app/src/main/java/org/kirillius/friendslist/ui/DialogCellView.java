@@ -10,6 +10,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -31,7 +32,7 @@ public class DialogCellView extends FrameLayout {
     private GradientDrawable mBackgroundDrawable;
     private ColorDrawable mPlaceholder;
 
-    private InnerDialogCellView mBubbleContainer;
+    private LinearLayout mBubbleContainer;
     private TextView textView;
     private ImageView imageView;
 
@@ -58,8 +59,8 @@ public class DialogCellView extends FrameLayout {
 
     private void init(Context context) {
 
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-        this.setLayoutParams(lp);
+        FrameLayout.LayoutParams flp = new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        this.setLayoutParams(flp);
 
         this.setPadding(dp(8), dp(8), dp(48), dp(8)); // incoming by default (right padding: 48dp)
 
@@ -70,7 +71,7 @@ public class DialogCellView extends FrameLayout {
         mPlaceholder = new ColorDrawable();
         mPlaceholder.setColor(COLOR_PLACEHOLDER);
 
-        mBubbleContainer = new InnerDialogCellView(context);
+        mBubbleContainer = new LinearLayout(context);
 
         mBubbleContainer.setPadding(dp(8), dp(8), dp(8), dp(8));
 
@@ -81,12 +82,14 @@ public class DialogCellView extends FrameLayout {
             mBubbleContainer.setBackground(mBackgroundDrawable);
         }
 
+        mBubbleContainer.setOrientation(LinearLayout.VERTICAL);
+
         addView(mBubbleContainer);
 
-        lp = (FrameLayout.LayoutParams) mBubbleContainer.getLayoutParams();
-        lp.width = LayoutParams.WRAP_CONTENT;
-        lp.height = LayoutParams.WRAP_CONTENT;
-        lp.gravity = Gravity.LEFT;   // incoming by default
+        flp = (FrameLayout.LayoutParams) mBubbleContainer.getLayoutParams();
+        flp.width = LayoutParams.WRAP_CONTENT;
+        flp.height = LayoutParams.WRAP_CONTENT;
+        flp.gravity = Gravity.LEFT;   // incoming by default
 
         textView = new TextView(context);
         textView.setVisibility(GONE);
@@ -94,11 +97,11 @@ public class DialogCellView extends FrameLayout {
 
         mBubbleContainer.addView(textView);
 
-        lp = (FrameLayout.LayoutParams) textView.getLayoutParams();
-        lp.width = LayoutParams.WRAP_CONTENT;
-        lp.height = LayoutParams.WRAP_CONTENT;
-        lp.leftMargin = dp(8);
-        lp.rightMargin = dp(8);
+        LinearLayout.LayoutParams llp = (LinearLayout.LayoutParams) textView.getLayoutParams();
+        llp.width = LayoutParams.WRAP_CONTENT;
+        llp.height = LayoutParams.WRAP_CONTENT;
+        llp.leftMargin = dp(8);
+        llp.rightMargin = dp(8);
 
         imageView = new ImageView(context);
         imageView.setVisibility(View.GONE);
@@ -129,7 +132,7 @@ public class DialogCellView extends FrameLayout {
     public void setText(String text) {
         textView.setText(text);
 
-        LayoutParams lp = (DialogCellView.LayoutParams) imageView.getLayoutParams();
+        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) imageView.getLayoutParams();
 
         if (!TextUtils.isEmpty(text)) {
             textView.setVisibility(VISIBLE);
@@ -176,7 +179,7 @@ public class DialogCellView extends FrameLayout {
             height = width + dp(100);
         }
 
-        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) imageView.getLayoutParams();
+        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) imageView.getLayoutParams();
         lp.width = width;
         lp.height = height;
 
@@ -210,40 +213,5 @@ public class DialogCellView extends FrameLayout {
             return AndroidUtilities.dp(value);
         }
         return (int)Math.ceil(value * getResources().getDisplayMetrics().density);
-    }
-
-    /**
-     * Some kind of vertical frame layout
-     */
-    private static class InnerDialogCellView extends FrameLayout {
-        public InnerDialogCellView(Context context) {
-            super(context);
-        }
-
-        @Override
-        protected void onLayout(boolean changed, int l, int t, int r, int b) {
-            // For children all layout are starts from 0 and l,t,r,b may be ignored
-            int offsetLeft = getPaddingLeft();
-            int offsetTop = getPaddingTop();
-            //int offsetRight = getMeasuredWidth() - getPaddingRight();
-            int left, top, right, bottom;
-
-            int childCount = getChildCount();
-            for (int i = 0; i < childCount; i++) {
-                View v = getChildAt(i);
-                if (v.getVisibility() != View.GONE) {
-                    LayoutParams lp = (LayoutParams) v.getLayoutParams();
-
-                    left = offsetLeft + lp.leftMargin;
-                    top = offsetTop + lp.topMargin;
-                    right = left + v.getMeasuredWidth();//offsetRight - lp.rightMargin;
-                    bottom = top + v.getMeasuredHeight();
-
-                    v.layout(left, top, right, bottom);
-
-                    offsetTop = bottom + lp.bottomMargin;
-                }
-            }
-        }
     }
 }

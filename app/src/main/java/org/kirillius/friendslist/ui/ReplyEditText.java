@@ -16,22 +16,22 @@ import org.kirillius.friendslist.core.AndroidUtilities;
 /**
  * Created by Kirill on 17.01.2016.
  */
-public class ReplyTextView extends FrameLayout {
+public class ReplyEditText extends FrameLayout {
 
     private EditText mEditText;
     private ImageView mSendButton;
 
-    public ReplyTextView(Context context) {
+    public ReplyEditText(Context context) {
         super(context);
         init(context);
     }
 
-    public ReplyTextView(Context context, AttributeSet attrs) {
+    public ReplyEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public ReplyTextView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ReplyEditText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }
