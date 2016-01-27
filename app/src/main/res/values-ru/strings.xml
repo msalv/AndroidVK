@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Список друзей</string>
+    <string name="online">Онлайн</string>
+    <string name="offline">Не в сети</string>
+    <string name="last_seen">заходил %s</string>
+    <string name="last_seen_female">заходила %s</string>
+    <string name="just_now">только что</string>
+
+    <string name="enter_message">Сообщение</string>
+
+    <string name="request_error">Во время запроса произошла ошибка. Пожалуйста, проверьте соединение с интернетом и попробуйте снова</string>
+
+    <string name="sign_in">ВОЙТИ</string>
+    <string name="auth_error">Не удалось войти. Пожалуйста, попробуйте снова</string>
+    <string name="load_more">Загрузить ещё</string>
+    <string name="try_again">Повторить</string>
+</resources>

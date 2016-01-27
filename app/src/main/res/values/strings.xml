@@ -3,6 +3,7 @@
     <string name="online">Online</string>
     <string name="offline">Offline</string>
     <string name="last_seen">last seen %s</string>
+    <string name="last_seen_female">last seen %s</string>
     <string name="just_now">just now</string>
 
     <string name="enter_message">Message</string>
@@ -13,4 +14,6 @@
 
     <string name="sign_in">SIGN IN</string>
     <string name="auth_error">An error occurred while trying to sign in. Please try again</string>
+    <string name="load_more">Load more</string>
+    <string name="try_again">Try Again</string>
 </resources>

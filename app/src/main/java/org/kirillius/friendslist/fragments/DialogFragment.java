@@ -25,8 +25,10 @@ import com.vk.sdk.api.model.VKList;
 
 import org.kirillius.friendslist.R;
 import org.kirillius.friendslist.core.AppLoader;
-import org.kirillius.friendslist.ui.MessagesAdapter;
-import org.kirillius.friendslist.ui.ReplyTextView;
+import org.kirillius.friendslist.ui.ErrorView;
+import org.kirillius.friendslist.ui.adapters.EndlessScrollAdapter;
+import org.kirillius.friendslist.ui.adapters.MessagesAdapter;
+import org.kirillius.friendslist.ui.ReplyEditText;
 
 public class DialogFragment extends Fragment {
     public static String TAG = "DialogFragment";
@@ -34,7 +36,7 @@ public class DialogFragment extends Fragment {
     private static final int MESSAGES_COUNT = 30;
 
     private VKApiUserFull mFriend;
-    private ReplyTextView mInputField;
+    private ReplyEditText mInputField;
 
     private LinearLayoutManager mLayoutManager;
     private MessagesAdapter mAdapter;
@@ -42,6 +44,9 @@ public class DialogFragment extends Fragment {
     private VKRequest mCurrentRequest;
     private Toast mCurrentToast;
     private Picasso mPicasso;
+
+    private View mLoadingView;
+    private ErrorView mErrorView;
 
     public DialogFragment() {
         // Required empty public constructor
@@ -95,12 +100,16 @@ public class DialogFragment extends Fragment {
                 last_seen = DateUtils.getRelativeTimeSpanString(mFriend.last_seen * 1000, now, DateUtils.MINUTE_IN_MILLIS, DateUtils.FORMAT_ABBREV_RELATIVE);
             }
 
-            actionBar.setSubtitle(getString(R.string.last_seen, last_seen));
+            int string_id = (mFriend.sex == VKApiUserFull.Sex.MALE) ? R.string.last_seen : R.string.last_seen_female;
+            actionBar.setSubtitle(getString(string_id, last_seen));
         }
 
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         View rootView = inflater.inflate(R.layout.fragment_dialog, container, false);
+
+        mLoadingView = rootView.findViewById(R.id.loading_view);
+        mErrorView = (ErrorView)rootView.findViewById(R.id.error_view);
 
         RecyclerView messagesListView = (RecyclerView) rootView.findViewById(R.id.messages_list);
         mPicasso = new Picasso.Builder(getActivity()).build();
@@ -118,6 +127,11 @@ public class DialogFragment extends Fragment {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
+
+                if (mAdapter.isLoading() || mAdapter.hasError()) {
+                    return;
+                }
+
                 if (dy < 0) {
                     if (mAdapter.getItemCount() >= mAdapter.getTotalCount()) {
                         return;
@@ -138,7 +152,14 @@ public class DialogFragment extends Fragment {
             }
         });
 
-        mInputField = (ReplyTextView) rootView.findViewById(R.id.input_field);
+        mAdapter.setOnErrorClickListener(new EndlessScrollAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View itemView, int position) {
+                fetchMoreMessages();
+            }
+        });
+
+        mInputField = (ReplyEditText) rootView.findViewById(R.id.input_field);
         mInputField.setOnSendClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -146,6 +167,13 @@ public class DialogFragment extends Fragment {
                 if ( text.length() > 0 ) {
                     sendMessage(text);
                 }
+            }
+        });
+
+        mErrorView.setOnRetryClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fetchMessages();
             }
         });
 
@@ -164,19 +192,28 @@ public class DialogFragment extends Fragment {
                 "count", MESSAGES_COUNT
         ), VKApiGetMessagesResponse.class);
 
+        mErrorView.setVisibility(View.GONE);
+        mLoadingView.setVisibility(View.VISIBLE);
+
         mCurrentRequest.executeWithListener(new VKRequest.VKRequestListener() {
             @Override
             public void onComplete(VKResponse response) {
+
+                mLoadingView.setVisibility(View.GONE);
+
                 if (response.parsedModel instanceof VKApiGetMessagesResponse) {
                     VKApiGetMessagesResponse data = (VKApiGetMessagesResponse) response.parsedModel;
                     updateMessagesList(data.items, data.count);
                 } else {
+                    mErrorView.setVisibility(View.VISIBLE);
                     showError(null);
                 }
             }
 
             @Override
             public void onError(VKError error) {
+                mLoadingView.setVisibility(View.GONE);
+                mErrorView.setVisibility(View.VISIBLE);
                 showError(error);
             }
         });
@@ -215,6 +252,7 @@ public class DialogFragment extends Fragment {
                     VKApiGetMessagesResponse data = (VKApiGetMessagesResponse) response.parsedModel;
                     appendToMessagesList(data.items, data.count);
                 } else {
+                    mAdapter.onError();
                     showError(null);
                 }
             }
@@ -222,6 +260,7 @@ public class DialogFragment extends Fragment {
             @Override
             public void onError(VKError error) {
                 mAdapter.setIsLoading(false);
+                mAdapter.onError();
                 showError(error);
             }
         });
@@ -303,6 +342,7 @@ public class DialogFragment extends Fragment {
         super.onDestroy();
 
         if (mCurrentRequest != null) {
+            mCurrentRequest.setRequestListener(null);
             mCurrentRequest.cancel();
         }
         mCurrentRequest = null;
@@ -315,6 +355,8 @@ public class DialogFragment extends Fragment {
 
         mFriend = null;
         mInputField = null;
+        mLoadingView = null;
+        mErrorView = null;
 
         if ( mPicasso != null ) {
             mPicasso.shutdown();

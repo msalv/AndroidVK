@@ -14,11 +14,24 @@
         android:clipToPadding="false"
         android:scrollbarStyle="outsideOverlay" />
 
-    <org.kirillius.friendslist.ui.ReplyTextView
+    <org.kirillius.friendslist.ui.ReplyEditText
         android:id="@+id/input_field"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
         android:layout_gravity="bottom" />
+
+    <include
+        android:id="@+id/loading_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        layout="@layout/progress_spinner" />
+
+    <org.kirillius.friendslist.ui.ErrorView
+        android:id="@+id/error_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
 </FrameLayout>
