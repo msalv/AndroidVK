@@ -97,11 +97,11 @@ public class DialogCellView extends FrameLayout {
 
         mBubbleContainer.addView(textView);
 
-        LinearLayout.LayoutParams container_lp = (LinearLayout.LayoutParams) textView.getLayoutParams();
-        container_lp.width = LayoutParams.WRAP_CONTENT;
-        container_lp.height = LayoutParams.WRAP_CONTENT;
-        container_lp.leftMargin = dp(8);
-        container_lp.rightMargin = dp(8);
+        LinearLayout.LayoutParams llp = (LinearLayout.LayoutParams) textView.getLayoutParams();
+        llp.width = LayoutParams.WRAP_CONTENT;
+        llp.height = LayoutParams.WRAP_CONTENT;
+        llp.leftMargin = dp(8);
+        llp.rightMargin = dp(8);
 
         imageView = new ImageView(context);
         imageView.setVisibility(View.GONE);
