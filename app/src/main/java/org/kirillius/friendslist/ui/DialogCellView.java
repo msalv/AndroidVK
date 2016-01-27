@@ -59,8 +59,8 @@ public class DialogCellView extends FrameLayout {
 
     private void init(Context context) {
 
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-        this.setLayoutParams(lp);
+        FrameLayout.LayoutParams flp = new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        this.setLayoutParams(flp);
 
         this.setPadding(dp(8), dp(8), dp(48), dp(8)); // incoming by default (right padding: 48dp)
 
@@ -86,11 +86,10 @@ public class DialogCellView extends FrameLayout {
 
         addView(mBubbleContainer);
 
-        lp = (FrameLayout.LayoutParams) mBubbleContainer.getLayoutParams();
-        //LinearLayout.LayoutParams container_lp = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        lp.width = LayoutParams.WRAP_CONTENT;
-        lp.height = LayoutParams.WRAP_CONTENT;
-        lp.gravity = Gravity.LEFT;   // incoming by default
+        flp = (FrameLayout.LayoutParams) mBubbleContainer.getLayoutParams();
+        flp.width = LayoutParams.WRAP_CONTENT;
+        flp.height = LayoutParams.WRAP_CONTENT;
+        flp.gravity = Gravity.LEFT;   // incoming by default
 
         textView = new TextView(context);
         textView.setVisibility(GONE);
