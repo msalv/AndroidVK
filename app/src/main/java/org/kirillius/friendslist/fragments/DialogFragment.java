@@ -44,6 +44,8 @@ public class DialogFragment extends Fragment {
     private Toast mCurrentToast;
     private Picasso mPicasso;
 
+    private View mLoadingView;
+
     public DialogFragment() {
         // Required empty public constructor
     }
@@ -102,6 +104,8 @@ public class DialogFragment extends Fragment {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         View rootView = inflater.inflate(R.layout.fragment_dialog, container, false);
+
+        mLoadingView = rootView.findViewById(R.id.loading_view);
 
         RecyclerView messagesListView = (RecyclerView) rootView.findViewById(R.id.messages_list);
         mPicasso = new Picasso.Builder(getActivity()).build();
@@ -177,9 +181,14 @@ public class DialogFragment extends Fragment {
                 "count", MESSAGES_COUNT
         ), VKApiGetMessagesResponse.class);
 
+        mLoadingView.setVisibility(View.VISIBLE);
+
         mCurrentRequest.executeWithListener(new VKRequest.VKRequestListener() {
             @Override
             public void onComplete(VKResponse response) {
+
+                mLoadingView.setVisibility(View.GONE);
+
                 if (response.parsedModel instanceof VKApiGetMessagesResponse) {
                     VKApiGetMessagesResponse data = (VKApiGetMessagesResponse) response.parsedModel;
                     updateMessagesList(data.items, data.count);
@@ -190,6 +199,7 @@ public class DialogFragment extends Fragment {
 
             @Override
             public void onError(VKError error) {
+                mLoadingView.setVisibility(View.GONE);
                 showError(error);
             }
         });
