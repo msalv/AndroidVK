@@ -282,6 +282,7 @@ public class FriendsFragment extends Fragment {
         super.onDestroy();
 
         if (mCurrentRequest != null) {
+            mCurrentRequest.setRequestListener(null);
             mCurrentRequest.cancel();
         }
         mCurrentRequest = null;
