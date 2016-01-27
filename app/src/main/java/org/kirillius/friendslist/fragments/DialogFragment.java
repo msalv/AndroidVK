@@ -25,6 +25,7 @@ import com.vk.sdk.api.model.VKList;
 
 import org.kirillius.friendslist.R;
 import org.kirillius.friendslist.core.AppLoader;
+import org.kirillius.friendslist.ui.ErrorView;
 import org.kirillius.friendslist.ui.adapters.EndlessScrollAdapter;
 import org.kirillius.friendslist.ui.adapters.MessagesAdapter;
 import org.kirillius.friendslist.ui.ReplyEditText;
@@ -43,6 +44,9 @@ public class DialogFragment extends Fragment {
     private VKRequest mCurrentRequest;
     private Toast mCurrentToast;
     private Picasso mPicasso;
+
+    private View mLoadingView;
+    private ErrorView mErrorView;
 
     public DialogFragment() {
         // Required empty public constructor
@@ -103,6 +107,9 @@ public class DialogFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_dialog, container, false);
 
+        mLoadingView = rootView.findViewById(R.id.loading_view);
+        mErrorView = (ErrorView)rootView.findViewById(R.id.error_view);
+
         RecyclerView messagesListView = (RecyclerView) rootView.findViewById(R.id.messages_list);
         mPicasso = new Picasso.Builder(getActivity()).build();
 
@@ -162,6 +169,13 @@ public class DialogFragment extends Fragment {
             }
         });
 
+        mErrorView.setOnRetryClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fetchMessages();
+            }
+        });
+
         fetchMessages();
 
         return rootView;
@@ -177,19 +191,28 @@ public class DialogFragment extends Fragment {
                 "count", MESSAGES_COUNT
         ), VKApiGetMessagesResponse.class);
 
+        mErrorView.setVisibility(View.GONE);
+        mLoadingView.setVisibility(View.VISIBLE);
+
         mCurrentRequest.executeWithListener(new VKRequest.VKRequestListener() {
             @Override
             public void onComplete(VKResponse response) {
+
+                mLoadingView.setVisibility(View.GONE);
+
                 if (response.parsedModel instanceof VKApiGetMessagesResponse) {
                     VKApiGetMessagesResponse data = (VKApiGetMessagesResponse) response.parsedModel;
                     updateMessagesList(data.items, data.count);
                 } else {
+                    mErrorView.setVisibility(View.VISIBLE);
                     showError(null);
                 }
             }
 
             @Override
             public void onError(VKError error) {
+                mLoadingView.setVisibility(View.GONE);
+                mErrorView.setVisibility(View.VISIBLE);
                 showError(error);
             }
         });

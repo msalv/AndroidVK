@@ -25,6 +25,7 @@ import com.vk.sdk.api.model.VKList;
 import org.kirillius.friendslist.R;
 import org.kirillius.friendslist.core.AppLoader;
 import org.kirillius.friendslist.core.OnNavigationListener;
+import org.kirillius.friendslist.ui.ErrorView;
 import org.kirillius.friendslist.ui.adapters.FriendsAdapter;
 
 public class FriendsFragment extends Fragment {
@@ -40,6 +41,9 @@ public class FriendsFragment extends Fragment {
     private Toast mCurrentToast;
     private Picasso mPicasso;
     private OnNavigationListener mOnNavigationListener;
+
+    private View mLoadingView;
+    private ErrorView mErrorView;
 
     public FriendsFragment() {
         // Required empty public constructor
@@ -70,8 +74,12 @@ public class FriendsFragment extends Fragment {
         ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
         actionBar.setTitle(R.string.app_name);
         actionBar.setSubtitle(null);
+        actionBar.setDisplayHomeAsUpEnabled(false);
 
         View rootView = inflater.inflate(R.layout.fragment_friends, container, false);
+
+        mLoadingView = rootView.findViewById(R.id.loading_view);
+        mErrorView = (ErrorView)rootView.findViewById(R.id.error_view);
 
         RecyclerView friendsListView = (RecyclerView) rootView.findViewById(R.id.friends_list);
         friendsListView.setHasFixedSize(true);
@@ -86,7 +94,7 @@ public class FriendsFragment extends Fragment {
             public void onItemClick(View itemView, int position) {
                 VKApiUserFull user = mAdapter.getItem(position);
 
-                if ( user == null ) {
+                if (user == null) {
                     return;
                 }
 
@@ -130,6 +138,13 @@ public class FriendsFragment extends Fragment {
             }
         });
 
+        mErrorView.setOnRetryClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fetchFriends();
+            }
+        });
+
         fetchFriends();
 
         return rootView;
@@ -146,18 +161,27 @@ public class FriendsFragment extends Fragment {
                 "count", FRIENDS_COUNT
         ));
 
+        mErrorView.setVisibility(View.GONE);
+        mLoadingView.setVisibility(View.VISIBLE);
+
         mCurrentRequest.executeWithListener(new VKRequest.VKRequestListener() {
             @Override
             public void onComplete(VKResponse response) {
+
+                mLoadingView.setVisibility(View.GONE);
+
                 if (response.parsedModel instanceof VKList) {
                     updateFriendsList((VKList<VKApiUserFull>) response.parsedModel);
                 } else {
+                    mErrorView.setVisibility(View.VISIBLE);
                     showError(null);
                 }
             }
 
             @Override
             public void onError(VKError error) {
+                mLoadingView.setVisibility(View.GONE);
+                mErrorView.setVisibility(View.VISIBLE);
                 showError(error);
             }
         });
