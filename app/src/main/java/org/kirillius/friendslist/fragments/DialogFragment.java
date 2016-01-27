@@ -100,7 +100,8 @@ public class DialogFragment extends Fragment {
                 last_seen = DateUtils.getRelativeTimeSpanString(mFriend.last_seen * 1000, now, DateUtils.MINUTE_IN_MILLIS, DateUtils.FORMAT_ABBREV_RELATIVE);
             }
 
-            actionBar.setSubtitle(getString(R.string.last_seen, last_seen));
+            int string_id = (mFriend.sex == VKApiUserFull.Sex.MALE) ? R.string.last_seen : R.string.last_seen_female;
+            actionBar.setSubtitle(getString(string_id, last_seen));
         }
 
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -341,6 +342,7 @@ public class DialogFragment extends Fragment {
         super.onDestroy();
 
         if (mCurrentRequest != null) {
+            mCurrentRequest.setRequestListener(null);
             mCurrentRequest.cancel();
         }
         mCurrentRequest = null;

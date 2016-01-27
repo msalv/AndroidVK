@@ -3,6 +3,7 @@
     <string name="online">Online</string>
     <string name="offline">Offline</string>
     <string name="last_seen">last seen %s</string>
+    <string name="last_seen_female">last seen %s</string>
     <string name="just_now">just now</string>
 
     <string name="enter_message">Message</string>
