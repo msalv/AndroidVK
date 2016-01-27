@@ -292,6 +292,9 @@ public class FriendsFragment extends Fragment {
         mAdapter = null;
         mLayoutManager = null;
 
+        mLoadingView = null;
+        mErrorView = null;
+
         if ( mPicasso != null ) {
             mPicasso.shutdown();
         }

@@ -353,6 +353,8 @@ public class DialogFragment extends Fragment {
 
         mFriend = null;
         mInputField = null;
+        mLoadingView = null;
+        mErrorView = null;
 
         if ( mPicasso != null ) {
             mPicasso.shutdown();
