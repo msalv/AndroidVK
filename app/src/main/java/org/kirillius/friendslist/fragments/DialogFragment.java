@@ -27,7 +27,7 @@ import org.kirillius.friendslist.R;
 import org.kirillius.friendslist.core.AppLoader;
 import org.kirillius.friendslist.ui.adapters.EndlessScrollAdapter;
 import org.kirillius.friendslist.ui.adapters.MessagesAdapter;
-import org.kirillius.friendslist.ui.ReplyTextView;
+import org.kirillius.friendslist.ui.ReplyEditText;
 
 public class DialogFragment extends Fragment {
     public static String TAG = "DialogFragment";
@@ -35,7 +35,7 @@ public class DialogFragment extends Fragment {
     private static final int MESSAGES_COUNT = 30;
 
     private VKApiUserFull mFriend;
-    private ReplyTextView mInputField;
+    private ReplyEditText mInputField;
 
     private LinearLayoutManager mLayoutManager;
     private MessagesAdapter mAdapter;
@@ -151,7 +151,7 @@ public class DialogFragment extends Fragment {
             }
         });
 
-        mInputField = (ReplyTextView) rootView.findViewById(R.id.input_field);
+        mInputField = (ReplyEditText) rootView.findViewById(R.id.input_field);
         mInputField.setOnSendClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
