@@ -342,7 +342,6 @@ public class DialogFragment extends Fragment {
         super.onDestroy();
 
         if (mCurrentRequest != null) {
-            mCurrentRequest.setRequestListener(null);
             mCurrentRequest.cancel();
         }
         mCurrentRequest = null;
@@ -350,6 +349,9 @@ public class DialogFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
+        if (mCurrentRequest != null) {
+            mCurrentRequest.setRequestListener(null);
+        }
         mAdapter = null;
         mLayoutManager = null;
 
