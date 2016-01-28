@@ -282,7 +282,6 @@ public class FriendsFragment extends Fragment {
         super.onDestroy();
 
         if (mCurrentRequest != null) {
-            mCurrentRequest.setRequestListener(null);
             mCurrentRequest.cancel();
         }
         mCurrentRequest = null;
@@ -290,6 +289,9 @@ public class FriendsFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
+        if (mCurrentRequest != null) {
+            mCurrentRequest.setRequestListener(null);
+        }
         mAdapter = null;
         mLayoutManager = null;
 
