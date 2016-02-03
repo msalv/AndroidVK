@@ -22,11 +22,10 @@ import com.vk.sdk.api.VKError;
 
 import org.kirillius.friendslist.core.AppLoader;
 import org.kirillius.friendslist.core.OnNavigationListener;
-import org.kirillius.friendslist.fragments.LoginErrorFragment;
+import org.kirillius.friendslist.fragments.LoginFragment;
 import org.kirillius.friendslist.fragments.FriendsFragment;
 
-public class MainActivity extends AppCompatActivity implements LoginErrorFragment.OnLoginAttemptListener,
-        OnNavigationListener {
+public class MainActivity extends AppCompatActivity implements OnNavigationListener {
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
@@ -55,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements LoginErrorFragmen
      */
     private void login() {
         if (!VKSdk.isLoggedIn()) {
-            VKSdk.login(this, "friends,messages,offline");
+            replaceFragmentWith(new LoginFragment(), LoginFragment.TAG);
         }
         else {
             showFriends();
@@ -74,7 +73,8 @@ public class MainActivity extends AppCompatActivity implements LoginErrorFragmen
             @Override
             public void onError(VKError error) {
                 // Произошла ошибка авторизации (например, пользователь запретил авторизацию)
-                showLoginError();
+                login();
+                Toast.makeText(AppLoader.getAppContext(), R.string.auth_error, Toast.LENGTH_LONG).show();
             }
         })) {
             super.onActivityResult(requestCode, resultCode, data);
@@ -86,14 +86,6 @@ public class MainActivity extends AppCompatActivity implements LoginErrorFragmen
      */
     private void showFriends() {
         replaceFragmentWith(new FriendsFragment(), FriendsFragment.TAG);
-    }
-
-    /**
-     * Shows login error fragment
-     */
-    private void showLoginError() {
-        replaceFragmentWith(new LoginErrorFragment(), LoginErrorFragment.TAG);
-        Toast.makeText(AppLoader.getAppContext(), R.string.auth_error, Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -131,11 +123,6 @@ public class MainActivity extends AppCompatActivity implements LoginErrorFragmen
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-    }
-
-    @Override
-    public void onLoginAttempt() {
-        this.login();
     }
 
     @Override
